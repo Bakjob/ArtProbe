@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { page } from '$app/state'
 
 	const links = [
@@ -9,7 +9,7 @@
 	]
 
     let currentPath = page.url?.pathname
-	$: currentPath = page.url?.pathname // update automatically on route change
+	$: currentPath = page.url?.pathname
 </script>
 
 <nav class="navbar">

@@ -7,7 +7,7 @@
 	}
     async function login() {
         // Redirect to a login page or open a login modal
-        window.location.href = '/auth/login' // Adjust the URL as needed
+        window.location.href = '/auth/login'
     }
 </script>
 
