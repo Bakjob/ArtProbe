@@ -29,7 +29,7 @@
 		{/each}
 	</ul>
 	<div class="right">
-		<AuthButton loggedIn={loggedIn} />
+		<AuthButton {loggedIn} />
 	</div>
 </nav>
 

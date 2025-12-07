@@ -1,13 +1,13 @@
 <script>
-    let password = ''
-    let confirmPassword = ''
-    function validateForm() {
-        if (password !== confirmPassword) {
-            alert('Passwords do not match!')
-            return false
-        }
-        return true
-    }
+	let password = ''
+	let confirmPassword = ''
+	function validateForm() {
+		if (password !== confirmPassword) {
+			alert('Passwords do not match!')
+			return false
+		}
+		return true
+	}
 </script>
 
 <div class="register-container">
@@ -22,8 +22,8 @@
 		<label for="password">Password:</label>
 		<input type="password" id="password" name="password" required />
 
-        <label for="confirm_password">Confirm Password:</label>
-        <input type="password" id="confirm_password" name="confirm_password" required />
+		<label for="confirm_password">Confirm Password:</label>
+		<input type="password" id="confirm_password" name="confirm_password" required />
 
 		<button type="submit">Register</button>
 	</form>
