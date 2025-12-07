@@ -1,5 +1,5 @@
 <script>
-	import { page } from '$app/state'
+	import { page } from '$app/stores'
 
 	const links = [
 		{ href: '/', label: 'Home' },
@@ -8,8 +8,10 @@
 		{ href: '/about', label: 'About' }
 	]
 
-    let currentPath = page.url?.pathname
-	$: currentPath = page.url?.pathname
+	// avoid reading the store at module-eval time; use the auto-subscribed `$page` inside
+	// the component instance so Svelte tracks updates correctly
+	let currentPath = '/'
+	$: currentPath = $page.url.pathname
 </script>
 
 <nav class="navbar">
