@@ -1,13 +1,21 @@
 <script lang="ts">
 	let { ad } = $props()
 
-	let imageSrc = $derived(ad.image?.trim() || '/placeholder.png')
+	// Use a derived value so we always fall back to the placeholder when image is missing/empty
+	let imageSrc = $derived(ad?.image?.trim() || '/placeholder.png')
+
+	function onImgError(e: Event) {
+		const img = e.currentTarget as HTMLImageElement
+		if (img && img.src && !img.src.endsWith('/placeholder.png')) {
+			img.src = '/placeholder.png'
+		}
+	}
 </script>
 
 <div class="card-container">
 	<h2>{ad.title}</h2>
 	<p>{ad.description}</p>
-	<img src={imageSrc} alt={ad.title} />
+	<img src={imageSrc} alt={ad.title} onerror={onImgError} />
 </div>
 
 <style scoped>

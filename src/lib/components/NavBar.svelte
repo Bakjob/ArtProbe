@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/stores'
+	import AuthButton from '$lib/components/AuthButton.svelte'
 
 	const links = [
 		{ href: '/', label: 'Home' },
@@ -8,10 +9,8 @@
 		{ href: '/about', label: 'About' }
 	]
 
-	// avoid reading the store at module-eval time; use the auto-subscribed `$page` inside
-	// the component instance so Svelte tracks updates correctly
-	let currentPath = '/'
-	$: currentPath = $page.url.pathname
+	// props from parent (Svelte 5 $props())
+	let { pathname = undefined, loggedIn = false } = $props()
 </script>
 
 <nav class="navbar">
@@ -21,14 +20,17 @@
 			<li class="nav-item">
 				<a
 					href={link.href}
-					class:selected={currentPath === link.href}
-					aria-current={currentPath === link.href ? 'page' : undefined}
+					class:selected={(pathname ?? $page.url.pathname) === link.href}
+					aria-current={(pathname ?? $page.url.pathname) === link.href ? 'page' : undefined}
 				>
 					{link.label}
 				</a>
 			</li>
 		{/each}
 	</ul>
+	<div class="right">
+		<AuthButton loggedIn={loggedIn} />
+	</div>
 </nav>
 
 <style scoped>
@@ -50,6 +52,11 @@
 		gap: 1.5rem;
 		margin: 0;
 		padding: 0;
+	}
+	.right {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 	}
 	.nav-item a {
 		color: white;
