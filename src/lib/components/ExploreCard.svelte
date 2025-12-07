@@ -1,14 +1,13 @@
 <script lang="ts">
-  export let ad: {
-    title?: string;
-    image?: string;
-    description?: string;
-    author?: string;
-    price?: string;
-  } = {};
+	let { ad }: { ad: {
+	title: string;
+	image: string;
+	description: string;
+	author: string;
+	price: string;
+  } } = $props()
 
-  // reactive fallback for missing image
-  $: imageSrc = (ad?.image?.trim() || '/placeholder.png');
+  let imageSrc = $derived(ad?.image?.trim() || '/placeholder.png')
 
   function onImgError(e: Event) {
     const img = e.currentTarget as HTMLImageElement;
@@ -20,7 +19,7 @@
 
 <div class="card">
   <div class="image-container" aria-hidden="{!imageSrc}">
-    <img src={imageSrc} alt={ad.title} on:error={onImgError} loading="lazy" />
+    <img src={imageSrc} alt={ad.title} onerror={onImgError} loading="lazy" />
   </div>
 
   <h2 class="title">{ad.title}</h2>
@@ -31,8 +30,8 @@
 
 <style>
   .card {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto 1fr;
     text-align: center;
     transition: --card 0.3s ease;
   }
