@@ -12,30 +12,43 @@
 	}
 </script>
 
-<div class="card-container">
-	<h2>{ad.title}</h2>
-	<p>{ad.description}</p>
+<div class="card">
 	<img src={imageSrc} alt={ad.title} onerror={onImgError} />
+	<h2>{ad.title}</h2>
+	<p id="description">{ad.description}</p>
+	<p id="author">{ad.author}</p>
+	<p id="price">{ad.price}</p>
 </div>
-
 <style scoped>
-	.card-container {
-		border: 1px solid #ccc;
-		border-radius: 8px;
-		padding: 1rem;
-		text-align: center;
-	}
 
-	.card-container img {
+	img {
 		max-width: 100%;
+		height: auto;
 		border-radius: 4px;
+		margin-bottom: 1rem;
 	}
 
-	.card-container h2 {
+	h2 {
+		font-size: 1.25rem;
 		margin: 0.5rem 0;
 	}
 
-	.card-container p {
-		color: #666;
+	#description {
+		font-size: 1rem;
+		color: #555;
+		margin: 0.5rem 0;
+	}
+
+	#author {
+		font-size: 0.9rem;
+		color: #888;
+		margin: 0.5rem 0;
+	}
+
+	#price {
+		font-size: 1rem;
+		font-weight: bold;
+		color: #000;
+		margin: 0.5rem 0;
 	}
 </style>

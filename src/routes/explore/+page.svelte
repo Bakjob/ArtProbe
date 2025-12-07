@@ -5,17 +5,23 @@
 		{
 			title: 'Ancient Scroll',
 			image: '',
-			description: 'Secrets it holds… much power hmm'
+			description: 'Secrets it holds… much power hmm', 
+			author: 'Master Li',
+			price: '500 credits'
 		},
 		{
 			title: 'Mystic Crystal',
 			image: '/crystal.png',
-			description: 'Glow in the dark it does 💫'
+			description: 'Glow in the dark it does 💫',
+			author: 'Crystal Sage',
+			price: '750 credits'
 		},
 		{
 			title: 'Yoda Plushie',
 			image: '/yoda.png',
-			description: 'Cuteness strong with this one 🧸💚'
+			description: 'Cuteness strong with this one 🧸💚',
+			author: 'Yoda Fan',
+			price: '600 credits'
 		}
 	]
 </script>
