@@ -1,54 +1,103 @@
 <script lang="ts">
-	let { ad } = $props()
+  export let ad: {
+    title?: string;
+    image?: string;
+    description?: string;
+    author?: string;
+    price?: string;
+  } = {};
 
-	// Use a derived value so we always fall back to the placeholder when image is missing/empty
-	let imageSrc = $derived(ad?.image?.trim() || '/placeholder.png')
+  // reactive fallback for missing image
+  $: imageSrc = (ad?.image?.trim() || '/placeholder.png');
 
-	function onImgError(e: Event) {
-		const img = e.currentTarget as HTMLImageElement
-		if (img && img.src && !img.src.endsWith('/placeholder.png')) {
-			img.src = '/placeholder.png'
-		}
-	}
+  function onImgError(e: Event) {
+    const img = e.currentTarget as HTMLImageElement;
+    if (img && !img.src.endsWith('/placeholder.png')) {
+      img.src = '/placeholder.png';
+    }
+  }
 </script>
 
 <div class="card">
-	<img src={imageSrc} alt={ad.title} onerror={onImgError} />
-	<h2>{ad.title}</h2>
-	<p id="description">{ad.description}</p>
-	<p id="author">{ad.author}</p>
-	<p id="price">{ad.price}</p>
+  <div class="image-container" aria-hidden="{!imageSrc}">
+    <img src={imageSrc} alt={ad.title} on:error={onImgError} loading="lazy" />
+  </div>
+
+  <h2 class="title">{ad.title}</h2>
+  <p class="description">{ad.description}</p>
+  <p class="author">{ad.author}</p>
+  <p class="price">{ad.price}</p>
 </div>
-<style scoped>
 
-	img {
-		max-width: 100%;
-		height: auto;
-		border-radius: 4px;
-		margin-bottom: 1rem;
-	}
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    transition: --card 0.3s ease;
+  }
 
-	h2 {
-		font-size: 1.25rem;
-		margin: 0.5rem 0;
-	}
+  /* Image container: start cropped, grow smoothly on hover */
+  .image-container {
+    width: 100%;
+    max-height: 200px;               /* initial cropped height */
+    overflow: hidden;                /* hide the rest of the image until expand */
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    transition: max-height 600ms cubic-bezier(.2,.8,.2,1), box-shadow 300ms;
+    border: 1px solid rgba(0,0,0,0.06);  /* small border around images */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
 
-	#description {
-		font-size: 1rem;
-		color: #555;
-		margin: 0.5rem 0;
-	}
+  .image-container img {
+    display: block;
+    width: 100%;
+    height: auto;                    /* natural aspect ratio */
+    object-fit: cover;               /* used if container forces size, but height is auto */
+    transition: transform 600ms cubic-bezier(.2,.8,.2,1); /* subtle transform if you want */
+  }
 
-	#author {
-		font-size: 0.9rem;
-		color: #888;
-		margin: 0.5rem 0;
-	}
+  /* Hover: reveal more of the image by increasing container max-height.
+     This pushes the following text down because the image container participates in layout. */
+  .card:hover .image-container {
+    max-height: 420px;               /* expanded height — tweak as needed */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
 
-	#price {
-		font-size: 1rem;
-		font-weight: bold;
-		color: #000;
-		margin: 0.5rem 0;
-	}
+  /* Compress text spacing while image grows to create "giving space" effect */
+  .title,
+  .description,
+  .author,
+  .price {
+    margin: 0.5rem 0;
+    transition: margin 400ms cubic-bezier(.2,.8,.2,1), color 200ms;
+  }
+
+  .card:hover .title,
+  .card:hover .description,
+  .card:hover .author,
+  .card:hover .price {
+    margin: 0.25rem 0;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    margin-top: 0.25rem;
+  }
+
+  .description {
+    font-size: 1rem;
+    color: #555;
+  }
+
+  .author {
+    font-size: 0.9rem;
+    color: #888;
+  }
+
+  .price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000;
+  }
 </style>
