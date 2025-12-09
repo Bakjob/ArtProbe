@@ -3,12 +3,13 @@
 -- ============================
 CREATE TYPE language_proficiency AS ENUM ('basic', 'fluent', 'native');
 CREATE TYPE order_status AS ENUM ('pending', 'in_progress', 'delivered', 'late', 'cancelled');
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================
 -- USERS
 -- ============================
 CREATE TABLE users (
-    user_id UUID PRIMARY KEY,
+    user_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(120) UNIQUE NOT NULL,
     phone VARCHAR(30),
@@ -19,7 +20,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE sessions (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
@@ -110,7 +111,7 @@ CREATE TABLE gig_tags (
 -- ORDERS
 -- ============================
 CREATE TABLE orders (
-    order_id UUID PRIMARY KEY,
+    order_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     buyer_id UUID REFERENCES users(user_id),
     seller_id UUID REFERENCES users(user_id),
     gig_id INT REFERENCES gigs(gig_id),
