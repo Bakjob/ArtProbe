@@ -1,14 +1,57 @@
+<script>
+	import { goto } from '$app/navigation'
+
+	let username = ''
+	let password = ''
+	let error = ''
+	let loading = false
+
+	async function handleSubmit(event) {
+		event.preventDefault()
+		error = ''
+		loading = true
+
+		try {
+			const response = await fetch('/auth/login', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ username, password })
+			})
+
+			const data = await response.json()
+
+			if (!response.ok) {
+				error = data.error || 'Login failed'
+				return
+			}
+
+			// Success - redirect to explore
+			goto('/explore')
+		} catch (err) {
+			error = 'Network error. Please try again.'
+		} finally {
+			loading = false
+		}
+	}
+</script>
+
 <div class="login-container">
 	<h1>Login</h1>
-	<p>Please enter your credentials to log in.</p>
-	<form method="POST" action="/auth/login">
+
+	{#if error}
+		<div class="error">{error}</div>
+	{/if}
+
+	<form on:submit={handleSubmit}>
 		<label for="username">Username:</label>
-		<input type="text" id="username" name="username" required />
+		<input type="text" id="username" bind:value={username} required />
 
 		<label for="password">Password:</label>
-		<input type="password" id="password" name="password" required />
+		<input type="password" id="password" bind:value={password} required />
 
-		<button type="submit">Login</button>
+		<button type="submit" disabled={loading}>
+			{loading ? 'Logging in...' : 'Login'}
+		</button>
 	</form>
 	<p>Don't have an account? <a href="/auth/register">Register here</a>.</p>
 </div>
@@ -64,5 +107,28 @@
 	p {
 		text-align: center;
 		margin-top: 1rem;
+	}
+
+	a {
+		color: #0070f3;
+		text-decoration: none;
+	}
+
+	a:hover {
+		text-decoration: underline;
+	}
+
+	.error {
+		background-color: #fee;
+		color: #c33;
+		padding: 0.75rem;
+		border-radius: 4px;
+		margin-bottom: 1rem;
+		border: 1px solid #fcc;
+	}
+
+	button:disabled {
+		background-color: #999;
+		cursor: not-allowed;
 	}
 </style>

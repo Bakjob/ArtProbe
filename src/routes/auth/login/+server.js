@@ -1,10 +1,23 @@
+import { loginUser } from '$lib/server/auth.js'
+import { json } from '@sveltejs/kit'
+
 export async function POST({ request, cookies }) {
 	const { username, password } = await request.json()
-	// Here you would normally validate the username and password
-	// For demonstration, we assume any username/password is valid
 
-	// Set a session cookie (in a real app, use a secure, unique session ID)
-	cookies.set('session', 'dummy-session-id', { path: '/' })
+	const result = await loginUser(username, password)
 
-	return new Response(null, { status: 204 })
+	if (!result.success) {
+		return json({ error: result.error }, { status: 400 })
+	}
+
+	// Set session cookie
+	cookies.set('session', result.sessionId, {
+		path: '/',
+		httpOnly: true,
+		sameSite: 'strict',
+		secure: process.env.NODE_ENV === 'production',
+		maxAge: 60 * 60 * 24 * 7 // 7 days
+	})
+
+	return json({ message: 'Login successful', userId: result.userId }, { status: 200 })
 }

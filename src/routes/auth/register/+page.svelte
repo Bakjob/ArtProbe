@@ -33,8 +33,8 @@
 				return
 			}
 
-			// Success - redirect to login
-			goto('/auth/login')
+			// Success - redirect to explore
+			goto('/explore')
 		} catch (err) {
 			error = 'Network error. Please try again.'
 		} finally {
