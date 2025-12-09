@@ -5,7 +5,7 @@
 		{
 			title: 'Ancient Scroll',
 			image: '/goku2.png',
-			description: 'Secrets it holds… much power hmm', 
+			description: 'Secrets it holds… much power hmm',
 			author: 'Master Li',
 			price: '500 credits'
 		},
@@ -43,7 +43,7 @@
 			description: 'Rebirth and renewal symbols 🔥',
 			author: 'Phoenix Keeper',
 			price: '950 credits'
-		},	
+		},
 		{
 			title: 'Wizard Hat',
 			image: '/broly.png',
@@ -64,7 +64,7 @@
 			description: 'See into the future 🔮',
 			author: 'Seer',
 			price: '1000 credits'
-		},	
+		},
 		{
 			title: 'Crystal Ball',
 			image: '/broly.png',
@@ -78,14 +78,14 @@
 			description: 'See into the future 🔮',
 			author: 'master balls',
 			price: '13 credits'
-		},	
+		},
 		{
 			title: 'Crystal Ball',
 			image: '/dodoria.png',
 			description: 'See into the future 🔮',
 			author: 'huge balls',
 			price: '1000 credits'
-		},
+		}
 	]
 </script>
 

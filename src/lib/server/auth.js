@@ -87,10 +87,11 @@ export async function loginUser(username, password) {
 		const sessionId = randomUUID()
 		const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
 
-		await pool.query(
-			'INSERT INTO sessions (id, user_id, expires_at) VALUES ($1, $2, $3)',
-			[sessionId, user.user_id, expiresAt]
-		)
+		await pool.query('INSERT INTO sessions (id, user_id, expires_at) VALUES ($1, $2, $3)', [
+			sessionId,
+			user.user_id,
+			expiresAt
+		])
 
 		return { success: true, sessionId, userId: user.user_id }
 	} catch (error) {

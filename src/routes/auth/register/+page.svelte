@@ -45,7 +45,7 @@
 
 <div class="register-container">
 	<h1>Register</h1>
-	
+
 	{#if error}
 		<div class="error">{error}</div>
 	{/if}
