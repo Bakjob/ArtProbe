@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:16
     container_name: artprobe_db
-    restart: always
+    restart: "no"
     environment:
       POSTGRES_USER: jakob_user
       POSTGRES_PASSWORD: password
@@ -11,6 +11,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
+      - ./init:/docker-entrypoint-initdb.d
       - db_data:/var/lib/postgresql/data
 
 volumes:
