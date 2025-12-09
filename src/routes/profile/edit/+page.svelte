@@ -41,7 +41,13 @@
 		<input type="number" id="age" name="age" value={age} min="1" max="120" />
 
 		<label for="gender">Gender:</label>
-		<input type="text" id="gender" name="gender" value={gender} placeholder="e.g. Male, Female, mental illness" />
+		<input
+			type="text"
+			id="gender"
+			name="gender"
+			value={gender}
+			placeholder="e.g. Male, Female, mental illness"
+		/>
 
 		<label for="phone">Phone:</label>
 		<input type="tel" id="phone" name="phone" value={phone} placeholder="+1234567890" />

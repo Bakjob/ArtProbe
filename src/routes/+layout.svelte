@@ -13,7 +13,7 @@
 </svelte:head>
 
 <main>
-	<NavBar loggedIn={data?.loggedIn} />
+	<NavBar loggedIn={data?.loggedIn} username={data?.user?.username} />
 	{@render children()}
 </main>
 

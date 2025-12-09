@@ -24,23 +24,67 @@
 				{/if}
 			</div>
 		</div>
+		<div>
+			<a class="edit-profile-button" href="/profile/edit">Edit Profile</a>
+		</div>
 	</div>
 
 	<!-- ⭐ MASTER STATS GRID -->
 	<h2 class="section-title">📊 Seller Stats, hmmm</h2>
 
 	<div class="stats-grid">
-		<div class="stat-box"><h3>{data.user.total_gigs}</h3><p>🛠️ Gigs</p></div>
-		<div class="stat-box"><h3>{data.user.total_orders}</h3><p>📦 Orders</p></div>
-		<div class="stat-box"><h3>{data.user.total_reviews}</h3><p>⭐ Reviews</p></div>
-		<div class="stat-box"><h3>{data.user.avg_rating ? data.user.avg_rating.toFixed(1) : 'N/A'}</h3><p>🌟 Avg Rating</p></div>
-		<div class="stat-box"><h3>{Math.round(data.user.on_time_rate * 100)}%</h3><p>⏰ On-Time Delivery</p></div>
-		<div class="stat-box"><h3>{Math.round(data.user.cancellation_rate * 100)}%</h3><p>❌ Cancellation Rate</p></div>
-		<div class="stat-box"><h3>{data.user.repeat_buyers}</h3><p>🔁 Repeat Buyers</p></div>
-		<div class="stat-box"><h3>${data.user.total_revenue}</h3><p>💰 Total Revenue</p></div>
-		<div class="stat-box"><h3>{data.user.avg_response_time ? Math.round(data.user.avg_response_time) : 'N/A'} min</h3><p>💬 Avg Response Time</p></div>
-		<div class="stat-box"><h3>{data.user.first_response_time ? Math.round(data.user.first_response_time) : 'N/A'} min</h3><p>⚡ First Response</p></div>
-		<div class="stat-box"><h3>{data.user.last_active ? new Date(data.user.last_active).toLocaleString() : 'N/A'}</h3><p>🟢 Last Active</p></div>
+		<div class="stat-box">
+			<h3>{data.user.total_gigs}</h3>
+			<p>🛠️ Gigs</p>
+		</div>
+		<div class="stat-box">
+			<h3>{data.user.total_orders}</h3>
+			<p>📦 Orders</p>
+		</div>
+		<div class="stat-box">
+			<h3>{data.user.total_reviews}</h3>
+			<p>⭐ Reviews</p>
+		</div>
+		<div class="stat-box">
+			{data.user.avg_rating != null ? Number(data.user.avg_rating).toFixed(1) : 'N/A'}
+			<p>🌟 Avg Rating</p>
+		</div>
+		<div class="stat-box">
+			<h3>
+				{data.user.on_time_rate != null ? Math.round(data.user.on_time_rate * 100) + '%' : 'N/A'}
+			</h3>
+			<p>⏰ On-Time Delivery</p>
+		</div>
+		<div class="stat-box">
+			<h3>
+				{data.user.cancellation_rate != null
+					? Math.round(data.user.cancellation_rate * 100) + '%'
+					: 'N/A'}
+			</h3>
+			<p>❌ Cancellation Rate</p>
+		</div>
+		<div class="stat-box">
+			<h3>{data.user.repeat_buyers}</h3>
+			<p>🔁 Repeat Buyers</p>
+		</div>
+		<div class="stat-box">
+			<h3>${data.user.total_revenue}</h3>
+			<p>💰 Total Revenue</p>
+		</div>
+		<div class="stat-box">
+			<h3>{data.user.avg_response_time ? Math.round(data.user.avg_response_time) : 'N/A'} min</h3>
+			<p>💬 Avg Response Time</p>
+		</div>
+		<div class="stat-box">
+			<h3>
+				{data.user.first_response_time ? Math.round(data.user.first_response_time) : 'N/A'} min
+			</h3>
+			<p>⚡ First Response</p>
+		</div>
+		<div class="stat-box">
+			<h3>{data.user.last_active ? new Date(data.user.last_active).toLocaleString() : 'N/A'}</h3>
+			<p>🟢 Last Active</p>
+		</div>
 	</div>
 
 	<!-- ⭐ LANGUAGES -->
@@ -135,7 +179,7 @@
 		font-size: 1.8rem;
 		margin-bottom: 1rem;
 		border-bottom: 3px solid #3b82f6;
-		padding-bottom: .5rem;
+		padding-bottom: 0.5rem;
 	}
 
 	.stats-grid {
@@ -158,9 +202,9 @@
 		color: #3b82f6;
 	}
 	.stat-box p {
-		margin: .3rem 0 0 0;
+		margin: 0.3rem 0 0 0;
 		color: #666;
-		font-size: .9rem;
+		font-size: 0.9rem;
 	}
 
 	.section {
@@ -170,12 +214,12 @@
 	.tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: .5rem;
+		gap: 0.5rem;
 	}
 
 	.tag {
 		background: #e2e8f0;
-		padding: .5rem 1rem;
+		padding: 0.5rem 1rem;
 		border-radius: 20px;
 	}
 
@@ -201,5 +245,16 @@
 		border: 1px solid #ddd;
 		border-radius: 10px;
 		padding: 1.2rem;
+	}
+
+	.edit-profile-button {
+		display: inline-block;
+		margin-top: 1rem;
+		padding: 0.5rem 1rem;
+		background-color: #3b82f6;
+		color: white;
+		border-radius: 6px;
+		text-decoration: none;
+		font-weight: bold;
 	}
 </style>

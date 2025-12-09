@@ -27,17 +27,17 @@ export async function load({ params }) {
 				-- ⭐ Total reviews
 				(SELECT COUNT(*) FROM reviews r WHERE r.reviewee_id = u.user_id) AS total_reviews,
 
-				-- ⭐ On-time delivery rate
-				(
-					SELECT 
-						CASE 
-							WHEN COUNT(*) = 0 THEN 0
-							ELSE SUM(CASE WHEN d.delivered_at <= o.deadline THEN 1 ELSE 0 END)::float / COUNT(*)
-						END
-					FROM deliveries d
-					JOIN orders o ON o.order_id = d.order_id
-					WHERE o.seller_id = u.user_id
-				) AS on_time_rate,
+                -- ⭐ On-time delivery rate
+                (
+                SELECT 
+                    CASE 
+                    WHEN COUNT(*) = 0 THEN 0
+                    ELSE SUM(CASE WHEN o.delivered_at <= o.deadline THEN 1 ELSE 0 END)::float / COUNT(*)
+                    END
+                FROM orders o
+                WHERE o.seller_id = u.user_id
+                    AND o.delivered_at IS NOT NULL
+                ) AS on_time_rate,
 
 				-- ⭐ Cancellation rate
 				(

@@ -121,6 +121,7 @@ CREATE TABLE orders (
     status order_status DEFAULT 'pending',
     deadline TIMESTAMP,
     created_at TIMESTAMP DEFAULT NOW(),
+    delivered_at TIMESTAMP,
     accepted_at TIMESTAMP,
     delivered_late BOOLEAN DEFAULT FALSE
 );

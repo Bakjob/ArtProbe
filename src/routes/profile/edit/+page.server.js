@@ -4,13 +4,13 @@ import pool from '$lib/server/db.js'
 
 export async function load({ cookies }) {
 	const sessionId = cookies.get('session')
-	
+
 	if (!sessionId) {
 		throw redirect(303, '/auth/login')
 	}
 
 	const user = await getUserBySession(sessionId)
-	
+
 	if (!user) {
 		throw redirect(303, '/auth/login')
 	}
@@ -29,13 +29,13 @@ export async function load({ cookies }) {
 export const actions = {
 	default: async ({ request, cookies }) => {
 		const sessionId = cookies.get('session')
-		
+
 		if (!sessionId) {
 			return { success: false, error: 'Not authenticated' }
 		}
 
 		const user = await getUserBySession(sessionId)
-		
+
 		if (!user) {
 			return { success: false, error: 'Not authenticated' }
 		}

@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:16
     container_name: artprobe_db
-    restart: "no"
+    restart: 'no'
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password

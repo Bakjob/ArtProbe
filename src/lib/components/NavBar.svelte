@@ -9,10 +9,10 @@
 		{ href: '/about', label: 'About' }
 	]
 
-	let { pathname = undefined, loggedIn = false } = $props()
+	let { pathname = undefined, loggedIn = false, username = null } = $props()
 
 	const visibleLinks = $derived(
-		loggedIn ? [...links, { href: '/profile/edit', label: 'Profile' }] : links
+		loggedIn && username ? [...links, { href: `/profile/${username}`, label: 'Profile' }] : links
 	)
 </script>
 
@@ -74,17 +74,20 @@
 
 	/* Sliding underline */
 	.nav-item a::after {
-	content: '';
-	position: absolute;
-	width: 0;
-	height: 2px;
-	bottom: -2px;
-	left: 0;
-	background: linear-gradient(90deg, #ffde59, #ff914d);
-	box-shadow: 0 0 4px #ffde59, 0 0 8px #ff914d;
-	transition: width 0.4s ease, transform 0.2s ease;
-}
-
+		content: '';
+		position: absolute;
+		width: 0;
+		height: 2px;
+		bottom: -2px;
+		left: 0;
+		background: linear-gradient(90deg, #ffde59, #ff914d);
+		box-shadow:
+			0 0 4px #ffde59,
+			0 0 8px #ff914d;
+		transition:
+			width 0.4s ease,
+			transform 0.2s ease;
+	}
 
 	/* Fun hover / selected effect */
 	.nav-item a.selected::after,
