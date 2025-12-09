@@ -5,16 +5,14 @@
 	const links = [
 		{ href: '/', label: 'Home' },
 		{ href: '/explore', label: 'Explore' },
-		{ href: '/home', label: 'Home page' },
+		{ href: '/test', label: 'Test page' },
 		{ href: '/about', label: 'About' }
 	]
 
 	let { pathname = undefined, loggedIn = false } = $props()
 
 	const visibleLinks = $derived(
-		loggedIn 
-			? [...links, { href: '/profile', label: 'Profile' }]
-			: links
+		loggedIn ? [...links, { href: '/profile', label: 'Profile' }] : links
 	)
 </script>
 
@@ -44,8 +42,8 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 1rem 2rem;
-		background-color: #333;
-		color: white;
+		background-color: #0e0b0b;
+		color: rgb(231, 164, 19);
 	}
 	.brand {
 		font-size: 1.5rem;
@@ -69,9 +67,32 @@
 		font-size: 1rem;
 		position: relative;
 		padding-bottom: 0.25rem;
+		transition: color 0.3s;
+		display: inline-block;
+		transform-origin: center;
 	}
-	.nav-item a.selected,
+
+	/* Sliding underline */
+	.nav-item a::after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 2px;
+	bottom: -2px;
+	left: 0;
+	background: linear-gradient(90deg, #ffde59, #ff914d);
+	box-shadow: 0 0 4px #ffde59, 0 0 8px #ff914d;
+	transition: width 0.4s ease, transform 0.2s ease;
+}
+
+
+	/* Fun hover / selected effect */
+	.nav-item a.selected::after,
+	.nav-item a:hover::after {
+		width: 100%;
+		transform: scaleX(1.2);
+	}
 	.nav-item a:hover {
-		border-bottom: 2px solid white;
+		color: #ffcc00;
 	}
 </style>

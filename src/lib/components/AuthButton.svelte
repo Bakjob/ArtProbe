@@ -13,7 +13,7 @@
 
 <button onclick={loggedIn ? logout : login}>
 	{#if loggedIn}
-		Logout 🌌✨
+		Logout
 	{:else}
 		Log in
 	{/if}
