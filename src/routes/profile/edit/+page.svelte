@@ -1,15 +1,23 @@
 <script>
-	export let data
-	export let form
+	let { data, form } = $props()
 
-	let gender = data.user?.gender || ''
-	let bio = data.user?.bio || ''
-	let age = data.user?.age || ''
-	let phone = data.user?.phone || ''
+	let gender = $state('')
+	let bio = $state('')
+	let age = $state('')
+	let phone = $state('')
 
-	$: if (form?.success) {
-		// Show success message
-	}
+	$effect(() => {
+		gender = data.user?.gender || ''
+		bio = data.user?.bio || ''
+		age = data.user?.age || ''
+		phone = data.user?.phone || ''
+	})
+
+	$effect(() => {
+		if (form?.success) {
+			// Show success message
+		}
+	})
 </script>
 
 <div class="profile-container">
@@ -33,7 +41,7 @@
 		<input type="number" id="age" name="age" value={age} min="1" max="120" />
 
 		<label for="gender">Gender:</label>
-		<input type="text" id="gender" name="gender" value={gender} placeholder="e.g. Male, Female, Non-binary" />
+		<input type="text" id="gender" name="gender" value={gender} placeholder="e.g. Male, Female, mental illness" />
 
 		<label for="phone">Phone:</label>
 		<input type="tel" id="phone" name="phone" value={phone} placeholder="+1234567890" />

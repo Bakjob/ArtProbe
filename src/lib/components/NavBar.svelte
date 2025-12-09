@@ -12,7 +12,7 @@
 	let { pathname = undefined, loggedIn = false } = $props()
 
 	const visibleLinks = $derived(
-		loggedIn ? [...links, { href: '/profile', label: 'Profile' }] : links
+		loggedIn ? [...links, { href: '/profile/edit', label: 'Profile' }] : links
 	)
 </script>
 
