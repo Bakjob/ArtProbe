@@ -1,31 +1,71 @@
 <script>
+	import { goto } from '$app/navigation'
+
+	let username = ''
+	let email = ''
 	let password = ''
 	let confirmPassword = ''
-	function validateForm() {
+	let error = ''
+	let loading = false
+
+	async function handleSubmit(event) {
+		event.preventDefault()
+		error = ''
+
 		if (password !== confirmPassword) {
-			alert('Passwords do not match!')
-			return false
+			error = 'Passwords do not match!'
+			return
 		}
-		return true
+
+		loading = true
+
+		try {
+			const response = await fetch('/auth/register', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ username, email, password })
+			})
+
+			const data = await response.json()
+
+			if (!response.ok) {
+				error = data.error || 'Registration failed'
+				return
+			}
+
+			// Success - redirect to login
+			goto('/auth/login')
+		} catch (err) {
+			error = 'Network error. Please try again.'
+		} finally {
+			loading = false
+		}
 	}
 </script>
 
 <div class="register-container">
 	<h1>Register</h1>
-	<form method="POST" action="/auth/register" on:submit|preventDefault={validateForm}>
+	
+	{#if error}
+		<div class="error">{error}</div>
+	{/if}
+
+	<form on:submit={handleSubmit}>
 		<label for="username">Username:</label>
-		<input type="text" id="username" name="username" required />
+		<input type="text" id="username" bind:value={username} required />
 
 		<label for="email">Email:</label>
-		<input type="email" id="email" name="email" required />
+		<input type="email" id="email" bind:value={email} required />
 
 		<label for="password">Password:</label>
-		<input type="password" id="password" name="password" required />
+		<input type="password" id="password" bind:value={password} required />
 
 		<label for="confirm_password">Confirm Password:</label>
-		<input type="password" id="confirm_password" name="confirm_password" required />
+		<input type="password" id="confirm_password" bind:value={confirmPassword} required />
 
-		<button type="submit">Register</button>
+		<button type="submit" disabled={loading}>
+			{loading ? 'Registering...' : 'Register'}
+		</button>
 	</form>
 	<p>Already have an account? <a href="/auth/login">Login here</a>.</p>
 </div>
@@ -87,5 +127,19 @@
 	}
 	a:hover {
 		text-decoration: underline;
+	}
+
+	.error {
+		background-color: #fee;
+		color: #c33;
+		padding: 0.75rem;
+		border-radius: 4px;
+		margin-bottom: 1rem;
+		border: 1px solid #fcc;
+	}
+
+	button:disabled {
+		background-color: #999;
+		cursor: not-allowed;
 	}
 </style>

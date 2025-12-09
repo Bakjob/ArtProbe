@@ -1,7 +1,14 @@
-export const POST = ({ cookies }) => {
-	// Register logic here (e.g., save user to database)
-	// For demonstration, we skip actual registration
-	// Set a session cookie (in a real app, use a secure, unique session ID)
-	cookies.set('session', 'dummy-session-id', { path: '/' })
-	return new Response(null, { status: 204 })
+import { registerUser } from '$lib/server/auth.js'
+import { json } from '@sveltejs/kit'
+
+export async function POST({ request, cookies }) {
+	const { username, password, email } = await request.json()
+
+	const result = await registerUser(username, password, email)
+
+	if (!result.success) {
+		return json({ error: result.error }, { status: 400 })
+	}
+
+	return json({ message: 'Registration successful', userId: result.userId }, { status: 201 })
 }
