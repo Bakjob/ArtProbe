@@ -120,7 +120,9 @@ CREATE TABLE orders (
     requirements TEXT,
     status order_status DEFAULT 'pending',
     deadline TIMESTAMP,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    accepted_at TIMESTAMP,
+    delivered_late BOOLEAN DEFAULT FALSE
 );
 
 -- ============================
@@ -157,20 +159,6 @@ CREATE TABLE messages (
     sender_id UUID REFERENCES users(user_id),
     text TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
-);
-
--- ============================
--- SELLER STATS
--- ============================
-CREATE TABLE seller_stats (
-    user_id UUID PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
-    delivery_rate NUMERIC(5,2) CHECK (delivery_rate BETWEEN 0 AND 100),
-    cancellation_rate NUMERIC(5,2) CHECK (cancellation_rate BETWEEN 0 AND 100),
-    avg_rating NUMERIC(3,2),
-    total_orders INT DEFAULT 0,
-    last_active_at TIMESTAMP,
-    current_level INT,
-    avg_response_time INT -- hours
 );
 
 CREATE INDEX idx_sessions_user_id ON sessions(user_id);
