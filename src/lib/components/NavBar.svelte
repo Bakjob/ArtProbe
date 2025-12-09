@@ -9,14 +9,19 @@
 		{ href: '/about', label: 'About' }
 	]
 
-	// props from parent (Svelte 5 $props())
 	let { pathname = undefined, loggedIn = false } = $props()
+
+	const visibleLinks = $derived(
+		loggedIn 
+			? [...links, { href: '/profile', label: 'Profile' }]
+			: links
+	)
 </script>
 
 <nav class="navbar">
 	<div class="brand">ArtProbe</div>
 	<ul class="nav-list">
-		{#each links as link}
+		{#each visibleLinks as link}
 			<li class="nav-item">
 				<a
 					href={link.href}

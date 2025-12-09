@@ -34,7 +34,7 @@
 			}
 
 			// Success - redirect to explore
-			goto('/explore')
+			window.location.href = '/explore'
 		} catch (err) {
 			error = 'Network error. Please try again.'
 		} finally {

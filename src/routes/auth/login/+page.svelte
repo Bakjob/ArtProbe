@@ -25,8 +25,8 @@
 				return
 			}
 
-			// Success - redirect to explore
-			goto('/explore')
+			// Success - reload page to update auth state
+			window.location.href = '/explore'
 		} catch (err) {
 			error = 'Network error. Please try again.'
 		} finally {

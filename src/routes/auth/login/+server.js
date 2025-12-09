@@ -1,7 +1,16 @@
-import { loginUser } from '$lib/server/auth.js'
+import { loginUser, getUserBySession } from '$lib/server/auth.js'
 import { json } from '@sveltejs/kit'
 
 export async function POST({ request, cookies }) {
+	// Check if already logged in
+	const existingSession = cookies.get('session')
+	if (existingSession) {
+		const user = await getUserBySession(existingSession)
+		if (user) {
+			return json({ error: 'Already logged in' }, { status: 400 })
+		}
+	}
+
 	const { username, password } = await request.json()
 
 	const result = await loginUser(username, password)
