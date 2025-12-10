@@ -4,7 +4,13 @@
 
 	const links = [
 		{ href: '/', label: 'Home' },
-		{ href: '/explore', label: 'Explore' },
+		{ 
+			label: 'Explore', 
+			dropdown: [
+				{ href: '/explore/gigs', label: 'Explore Gigs' },
+				{ href: '/explore/art', label: 'Explore Art' }
+			]
+		},
 		{ href: '/test', label: 'Test page' },
 		{ href: '/about', label: 'About' }
 	]
@@ -21,13 +27,29 @@
 	<ul class="nav-list">
 		{#each visibleLinks as link}
 			<li class="nav-item">
-				<a
-					href={link.href}
-					class:selected={(pathname ?? $page.url.pathname) === link.href}
-					aria-current={(pathname ?? $page.url.pathname) === link.href ? 'page' : undefined}
-				>
-					{link.label}
-				</a>
+				{#if link.dropdown}
+					<span class="dropdown-trigger">
+						{link.label} ▼
+					</span>
+					<div class="dropdown-menu">
+						{#each link.dropdown as item}
+							<a 
+								href={item.href}
+								class:selected={(pathname ?? $page.url.pathname) === item.href}
+							>
+								{item.label}
+							</a>
+						{/each}
+					</div>
+				{:else}
+					<a
+						href={link.href}
+						class:selected={(pathname ?? $page.url.pathname) === link.href}
+						aria-current={(pathname ?? $page.url.pathname) === link.href ? 'page' : undefined}
+					>
+						{link.label}
+					</a>
+				{/if}
 			</li>
 		{/each}
 	</ul>
@@ -97,5 +119,59 @@
 	}
 	.nav-item a:hover {
 		color: #ffcc00;
+	}
+
+	/* Dropdown */
+	.nav-item {
+		position: relative;
+	}
+
+	.dropdown-trigger {
+		color: white;
+		font-size: 1rem;
+		cursor: pointer;
+		padding-bottom: 0.25rem;
+		display: inline-block;
+		transition: color 0.3s;
+	}
+
+	.dropdown-trigger:hover {
+		color: #ffcc00;
+	}
+
+	.dropdown-menu {
+		display: none;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		background: #1a1a1a;
+		border-radius: 8px;
+		padding: 0.5rem 0;
+		min-width: 180px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+		z-index: 100;
+		margin-top: 0.25rem;
+	}
+
+	.nav-item:hover .dropdown-menu {
+		display: block;
+	}
+
+	.dropdown-menu a {
+		display: block;
+		padding: 0.75rem 1rem;
+		color: white;
+		text-decoration: none;
+		transition: background 0.2s;
+	}
+
+	.dropdown-menu a:hover {
+		background: rgba(255, 222, 89, 0.1);
+		color: #ffcc00;
+	}
+
+	.dropdown-menu a.selected {
+		background: rgba(255, 222, 89, 0.2);
+		color: #ffde59;
 	}
 </style>

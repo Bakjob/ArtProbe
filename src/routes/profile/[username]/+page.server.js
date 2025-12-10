@@ -137,6 +137,8 @@ export async function load({ params }) {
 			[user.user_id]
 		)
 
+        console.log('Loaded profile for user:', username)
+
 		return {
 			user,
 			languages: languages.rows,

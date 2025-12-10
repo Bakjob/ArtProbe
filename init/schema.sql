@@ -132,10 +132,19 @@ CREATE TABLE orders (
 CREATE TABLE deliveries (
     delivery_id SERIAL PRIMARY KEY,
     order_id UUID REFERENCES orders(order_id) ON DELETE CASCADE,
-    file_url TEXT,
     message TEXT,
     delivered_at TIMESTAMP DEFAULT NOW()
 );
+
+-- ============================
+-- DELIVERY IMAGES
+-- ============================
+CREATE TABLE delivery_images (
+    image_id SERIAL PRIMARY KEY,
+    delivery_id INT REFERENCES deliveries(delivery_id) ON DELETE CASCADE,
+    file_url TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+)
 
 -- ============================
 -- REVIEWS
