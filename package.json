@@ -31,9 +31,8 @@
 		"vitest-browser-svelte": "^2.0.1"
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.948.0",
 		"bcrypt": "^6.0.0",
-		"dotenv": "^17.2.3",
-		"jsonwebtoken": "^9.0.3",
 		"pg": "^8.16.3"
 	}
 }

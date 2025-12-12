@@ -107,6 +107,12 @@ CREATE TABLE gig_tags (
     PRIMARY KEY (gig_id, tag_id)
 );
 
+CREATE TABLE portfolio_tags (
+    portfolio_id INT REFERENCES portfolio_items(portfolio_id) ON DELETE CASCADE,
+    tag_id INT REFERENCES tags(tag_id) ON DELETE CASCADE,
+    PRIMARY KEY (portfolio_id, tag_id)
+);
+
 -- ============================
 -- ORDERS
 -- ============================
@@ -144,7 +150,7 @@ CREATE TABLE delivery_images (
     delivery_id INT REFERENCES deliveries(delivery_id) ON DELETE CASCADE,
     file_url TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
-)
+);
 
 -- ============================
 -- REVIEWS
