@@ -1,6 +1,7 @@
 <script>
 	import { page } from '$app/stores'
 	import AuthButton from '$lib/components/AuthButton.svelte'
+	import Nav from '$lib/components/nav/Nav.svelte'
 
 	const links = [
 		{ href: '/', label: 'Home' },
@@ -54,6 +55,10 @@
 		{/each}
 	</ul>
 	<div class="right">
+		<Nav loggedIn={data?.loggedIn} username={data?.user?.username}/>	
+		{#if loggedIn && username}
+			<span>Welcome, {username}!</span>
+		{/if}
 		<AuthButton {loggedIn} />
 	</div>
 </nav>
