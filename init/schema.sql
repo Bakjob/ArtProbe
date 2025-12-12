@@ -66,6 +66,7 @@ CREATE TABLE posts (
     file_url TEXT NOT NULL,
     title VARCHAR(255),
     likes INT DEFAULT 0,
+    mature_content BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
