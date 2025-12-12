@@ -60,11 +60,12 @@ CREATE TABLE user_skills (
 -- ============================
 -- PORTFOLIO ITEMS
 -- ============================
-CREATE TABLE portfolio_items (
-    portfolio_id SERIAL PRIMARY KEY,
+CREATE TABLE posts (
+    post_id SERIAL PRIMARY KEY,
     user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
     file_url TEXT NOT NULL,
     title VARCHAR(255),
+    likes INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -107,10 +108,10 @@ CREATE TABLE gig_tags (
     PRIMARY KEY (gig_id, tag_id)
 );
 
-CREATE TABLE portfolio_tags (
-    portfolio_id INT REFERENCES portfolio_items(portfolio_id) ON DELETE CASCADE,
+CREATE TABLE post_tags (
+    post_id INT REFERENCES posts(post_id) ON DELETE CASCADE,
     tag_id INT REFERENCES tags(tag_id) ON DELETE CASCADE,
-    PRIMARY KEY (portfolio_id, tag_id)
+    PRIMARY KEY (post_id, tag_id)
 );
 
 -- ============================

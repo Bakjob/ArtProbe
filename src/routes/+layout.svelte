@@ -1,6 +1,6 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg'
-	import NavBar from '$lib/components/NavBar.svelte'
+	import NavBar from '$lib/components/nav/NavBar.svelte'
 	import '$lib/styles/global.css'
 
 	import type { LayoutProps } from './$types'
