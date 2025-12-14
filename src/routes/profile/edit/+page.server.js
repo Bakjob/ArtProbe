@@ -27,7 +27,7 @@ export async function load({ cookies }) {
 }
 
 export const actions = {
-	default: async ({ request, cookies }) => {
+	update: async ({ request, cookies }) => {
 		const sessionId = cookies.get('session')
 
 		if (!sessionId) {
@@ -56,6 +56,38 @@ export const actions = {
 		} catch (error) {
 			console.error('Profile update error:', error)
 			return { success: false, error: 'Failed to update profile' }
+		}
+	},
+
+	delete: async ({ cookies }) => {
+		const sessionId = cookies.get('session')
+
+		if (!sessionId) {
+			return { success: false, error: 'Not authenticated' }
+		}
+
+		const user = await getUserBySession(sessionId)
+
+		if (!user) {
+			return { success: false, error: 'Not authenticated' }
+		}
+
+		try {
+			// Delete user (CASCADE will handle related records)
+			await pool.query('DELETE FROM users WHERE user_id = $1', [user.user_id])
+
+			// Delete session
+			await pool.query('DELETE FROM sessions WHERE session_id = $1', [sessionId])
+
+			// Clear session cookie
+			cookies.delete('session', { path: '/' })
+
+			// Redirect to home page
+			throw redirect(303, '/')
+		} catch (error) {
+			if (error?.status === 303) throw error
+			console.error('Profile deletion error:', error)
+			return { success: false, error: 'Failed to delete profile' }
 		}
 	}
 }

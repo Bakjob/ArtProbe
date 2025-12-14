@@ -36,7 +36,7 @@
 		<div class="success">Profile updated successfully!</div>
 	{/if}
 
-	<form method="POST">
+	<form method="POST" action="?/update">
 		<label for="age">Age:</label>
 		<input type="number" id="age" name="age" value={age} min="1" max="120" />
 
@@ -57,6 +57,14 @@
 
 		<button type="submit">Save Profile</button>
 	</form>
+
+	<div class="danger-zone">
+		<h3>Danger Zone</h3>
+		<p>Once you delete your profile, there is no going back. Please be certain.</p>
+		<form method="POST" action="?/delete" onsubmit={(e) => { if (!confirm('Are you sure you want to delete your profile? This action cannot be undone.')) e.preventDefault(); }}>
+			<button type="submit" class="delete-button">Delete Profile</button>
+		</form>
+	</div>
 </div>
 
 <style>
@@ -127,6 +135,44 @@
 	button:disabled {
 		background-color: #999;
 		cursor: not-allowed;
+	}
+	.danger-zone {
+		margin-top: 3rem;
+		padding: 1.5rem;
+		border: 2px solid #dc3545;
+		border-radius: 8px;
+		background-color: #fff5f5;
+	}
+
+	.danger-zone h3 {
+		color: #dc3545;
+		margin: 0 0 0.5rem 0;
+		font-size: 1.1rem;
+	}
+
+	.danger-zone p {
+		color: #666;
+		font-size: 0.9rem;
+		margin: 0 0 1rem 0;
+	}
+
+	.danger-zone form {
+		margin: 0;
+	}
+
+	.delete-button {
+		background-color: #dc3545;
+		padding: 0.5rem 1rem;
+		font-size: 0.9rem;
+		margin-top: 0;
+	}
+
+	.delete-button:hover {
+		background-color: #c82333;
+	}
+
+	.delete-button:hover {
+		background-color: #c82333;
 	}
 
 	.error {
