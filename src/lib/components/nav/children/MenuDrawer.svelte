@@ -13,12 +13,6 @@
 
 	const dispatch = createEventDispatcher()
 
-	const visibleLinks = $derived(
-		loggedIn && username
-			? [...links, { href: `/profile/${username}`, label: 'Profile' }]
-			: links
-	)
-
 	// helper för att stänga
 	function close() {
 		dispatch('close')
@@ -40,7 +34,7 @@
 		class="drawer {position}"
 		transition:fly={{ x: position === 'right' ? 200 : -200, duration: 200 }}
 	>
-		{#each visibleLinks as link}
+		{#each links as link}
 			{#if link.dropdown}
 				<div class="dropdown">
 					<div class="dropdown-label">{link.label}</div>

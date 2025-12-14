@@ -66,8 +66,7 @@ export async function actions({ request, cookies }) {
 			})
 		)
 
-		// Store the S3 key path, not a public URL
-		const fileUrl = `posts/${fileName}`
+		const fileUrl = `https://pub-dda74843e5b241c5b5fd0845db919b26.r2.dev/posts/${fileName}`
 
 		// Insert post into database
 		const postResult = await pool.query(

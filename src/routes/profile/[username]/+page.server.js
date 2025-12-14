@@ -122,8 +122,8 @@ export async function load({ params }) {
 		)
 
 		const portfolio = await pool.query(
-			`SELECT portfolio_id, file_url, title, created_at
-			 FROM portfolio_items
+			`SELECT post_id, file_url, title, created_at
+			 FROM posts
 			 WHERE user_id = $1
 			 ORDER BY created_at DESC`,
 			[user.user_id]

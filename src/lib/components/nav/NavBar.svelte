@@ -14,20 +14,21 @@
 			]
 		},
 		{ href: '/test', label: 'Test page' },
-		{ href: '/about', label: 'About' },
-		{ href: '/create', label: 'Create' }
+		{ href: '/about', label: 'About' }
 	]
 
 	let { pathname = undefined, loggedIn = false, username = null } = $props()
 	let menuOpen = $state(false)
 
 	const visibleLinks = $derived(
-		loggedIn && username ? [...links, { href: `/profile/${username}`, label: 'Profile' }] : links
+		loggedIn && username 
+			? [...links, { href: '/create', label: 'Create' }, { href: `/profile/${username}`, label: 'Profile' }] 
+			: links
 	)
 </script>
 
 <nav class="navbar">
-	<div class="brand">ArtProbe</div>
+	<a href="/" class="brand">ArtProbe</a>
 	<div class="right">
 		<MenuButton ariaLabel="Open menu" onClick={() => (menuOpen = true)} />
 		{#if loggedIn && username}
@@ -39,7 +40,7 @@
 
 <MenuDrawer
 	open={menuOpen}
-	links={links}
+	links={visibleLinks}
 	pathname={pathname ?? $page.url.pathname}
 	loggedIn={loggedIn}
 	username={username}
@@ -58,5 +59,11 @@
 	.brand {
 		font-size: 1.5rem;
 		font-weight: bold;
+		color: rgb(231, 164, 19);
+		text-decoration: none;
+		transition: opacity 0.2s;
+	}
+	.brand:hover {
+		opacity: 0.8;
 	}
 </style>
