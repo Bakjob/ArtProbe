@@ -1,17 +1,15 @@
 import pool from '$lib/server/db.js'
-import { json } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 import { r2 } from '$lib/server/r2.js'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import crypto from 'crypto'
 
 export async function load() {
 	try {
-		const result = await pool.query(
-			`SELECT name FROM tags ORDER BY name ASC`
-		)
+		const result = await pool.query(`SELECT name FROM tags ORDER BY name ASC`)
 
-		const tags = result.rows.map(row => row.name)
-		
+		const tags = result.rows.map((row) => row.name)
+
 		return { tags }
 	} catch (error) {
 		console.error('Error fetching tags:', error)
@@ -19,88 +17,97 @@ export async function load() {
 	}
 }
 
-export async function actions({ request, cookies }) {
-	try {
-		// Check if user is logged in
-		const sessionId = cookies.get('session_id')
-		if (!sessionId) {
-			return json({ message: 'Unauthorized' }, { status: 401 })
-		}
+export const actions = {
+	create: async ({ request, cookies }) => {
+		try {
+			// Check if user is logged in
+			const sessionId = cookies.get('session')
 
-		// Get user from session
-		const sessionResult = await pool.query(
-			`SELECT user_id FROM sessions WHERE id = $1 AND expires_at > NOW()`,
-			[sessionId]
-		)
+			if (!sessionId) {
+				return fail(401, { message: 'Unauthorized' })
+			}
 
-		if (sessionResult.rows.length === 0) {
-			return json({ message: 'Unauthorized' }, { status: 401 })
-		}
+			// Get user from session
+			const sessionResult = await pool.query(
+				`SELECT user_id FROM sessions WHERE id = $1 AND expires_at > NOW()`,
+				[sessionId]
+			)
 
-		const userId = sessionResult.rows[0].user_id
+			console.log('UserID upload:', sessionResult.rows)
 
-		// Parse form data
-		const formData = await request.formData()
-		const title = formData.get('title')
-		const description = formData.get('description')
-		const tagsJson = formData.get('tags')
-		const imageFile = formData.get('image')
+			if (sessionResult.rows.length === 0) {
+				return fail(401, { message: 'Unauthorized - Session expired' })
+			}
 
-		if (!title || !description || !imageFile) {
-			return json({ message: 'Missing required fields' }, { status: 400 })
-		}
+			const userId = sessionResult.rows[0].user_id
 
-		const tags = tagsJson ? JSON.parse(tagsJson) : []
+			// Parse form data
+			const formData = await request.formData()
+			const title = formData.get('title')
+			const description = formData.get('description')
+			const tagsJson = formData.get('tags')
+			const imageFile = formData.get('image')
 
-		// Upload image to R2
-		const fileExtension = imageFile.name.split('.').pop()
-		const fileName = `${crypto.randomUUID()}.${fileExtension}`
-		const fileBuffer = await imageFile.arrayBuffer()
+			if (!title || !description || !imageFile) {
+				return fail(400, { message: 'Missing required fields' })
+			}
 
-		await r2.send(
-			new PutObjectCommand({
-				Bucket: 'artprobe',
-				Key: `posts/${fileName}`,
-				Body: Buffer.from(fileBuffer),
-				ContentType: imageFile.type
-			})
-		)
+			const tags = tagsJson ? JSON.parse(tagsJson) : []
 
-		const fileUrl = `https://pub-dda74843e5b241c5b5fd0845db919b26.r2.dev/posts/${fileName}`
+			// Upload image to R2
+			const fileExtension = imageFile.name.split('.').pop()
+			const fileName = `${crypto.randomUUID()}.${fileExtension}`
+			const fileBuffer = await imageFile.arrayBuffer()
 
-		// Insert post into database
-		const postResult = await pool.query(
-			`INSERT INTO posts (user_id, file_url, title, likes, created_at)
+			await r2.send(
+				new PutObjectCommand({
+					Bucket: 'artprobe-bucket',
+					Key: `posts/${fileName}`,
+					Body: Buffer.from(fileBuffer),
+					ContentType: imageFile.type
+				})
+			)
+
+			const fileUrl = `https://pub-dda74843e5b241c5b5fd0845db919b26.r2.dev/posts/${fileName}`
+
+			// Insert post into database
+			const postResult = await pool.query(
+				`INSERT INTO posts (user_id, file_url, title, likes, created_at)
 			 VALUES ($1, $2, $3, 0, NOW())
 			 RETURNING post_id`,
-			[userId, fileUrl, title]
-		)
+				[userId, fileUrl, title]
+			)
 
-		const postId = postResult.rows[0].post_id
+			const postId = postResult.rows[0].post_id
 
-		// Insert tags
-		for (const tagName of tags) {
-			// Insert tag if it doesn't exist
-			const tagResult = await pool.query(
-				`INSERT INTO tags (name) VALUES ($1)
+			// Insert tags
+			for (const tagName of tags) {
+				// Insert tag if it doesn't exist
+				const tagResult = await pool.query(
+					`INSERT INTO tags (name) VALUES ($1)
 				 ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
 				 RETURNING tag_id`,
-				[tagName]
-			)
+					[tagName]
+				)
 
-			const tagId = tagResult.rows[0].tag_id
+				const tagId = tagResult.rows[0].tag_id
 
-			// Link tag to post
-			await pool.query(
-				`INSERT INTO post_tags (post_id, tag_id) VALUES ($1, $2)
+				// Link tag to post
+				await pool.query(
+					`INSERT INTO post_tags (post_id, tag_id) VALUES ($1, $2)
 				 ON CONFLICT DO NOTHING`,
-				[postId, tagId]
-			)
-		}
+					[postId, tagId]
+				)
+			}
 
-		return json({ postId, message: 'Post created successfully' }, { status: 201 })
-	} catch (error) {
-		console.error('Error creating post:', error)
-		return json({ message: 'Failed to create post', error: error.message }, { status: 500 })
+			throw redirect(303, `/posts/${postId}`)
+		} catch (error) {
+			// Don't catch redirect errors
+			if (error?.status === 303) {
+				throw error
+			}
+			console.error('Error creating post:', error)
+			return fail(500, { message: 'Failed to create post', error: error.message })
+		}
 	}
 }

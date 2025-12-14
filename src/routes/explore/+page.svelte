@@ -1,116 +1,128 @@
 <script>
-	import ExploreCard from '$lib/components/ExploreCard.svelte'
-
-	const ads = [
-		{
-			title: 'Ancient Scroll',
-			image: '/goku2.png',
-			description: 'Secrets it holds… much power hmm',
-			author: 'Master Li',
-			price: '500 credits'
-		},
-		{
-			title: 'Mystic Crystal',
-			image: '/cell.png',
-			description: 'Glow in the dark it does 💫',
-			author: 'Crystal Sage',
-			price: '750 credits'
-		},
-		{
-			title: 'Yoda Plushie',
-			image: '/goku.png',
-			description: 'Cuteness strong with this one 🧸💚',
-			author: 'Yoda Fan',
-			price: '600 credits'
-		},
-		{
-			title: 'Dragon Figurine',
-			image: '/vegeta.png',
-			description: 'Fierce protector of treasures 🐉',
-			author: 'Dragon Master',
-			price: '900 credits'
-		},
-		{
-			title: 'Enchanted Map',
-			image: '/frieza.png',
-			description: 'Leads to hidden wonders 🗺️✨',
-			author: 'Map Keeper',
-			price: '850 credits'
-		},
-		{
-			title: 'Phoenix Feather',
-			image: '/trunks.png',
-			description: 'Rebirth and renewal symbols 🔥',
-			author: 'Phoenix Keeper',
-			price: '950 credits'
-		},
-		{
-			title: 'Wizard Hat',
-			image: '/broly.png',
-			description: 'Grants wisdom to the wearer 🎩',
-			author: 'Wizard Master',
-			price: '700 credits'
-		},
-		{
-			title: 'Magic Wand',
-			image: '/gohan.png',
-			description: 'Channel your inner magic ✨',
-			author: 'Magic User',
-			price: '800 credits'
-		},
-		{
-			title: 'Crystal Ball',
-			image: '/piccolo.png',
-			description: 'See into the future 🔮',
-			author: 'Seer',
-			price: '1000 credits'
-		},
-		{
-			title: 'Crystal Ball',
-			image: '/broly.png',
-			description: 'See into the future 🔮',
-			author: 'big balls',
-			price: '10023 credits'
-		},
-		{
-			title: 'Crystal Ball',
-			image: '/gohan.png',
-			description: 'See into the future 🔮',
-			author: 'master balls',
-			price: '13 credits'
-		},
-		{
-			title: 'Crystal Ball',
-			image: '/dodoria.png',
-			description: 'See into the future 🔮',
-			author: 'huge balls',
-			price: '1000 credits'
-		}
-	]
+	let { data } = $props()
+	let posts = $derived(data.posts)
 </script>
 
 <div class="explore-container">
 	<h1>Explore</h1>
-	<p>Discover new content and artworks here.</p>
-	<p>Return to the <a href="/">home page</a>.</p>
+	<p>Discover amazing artworks from our community</p>
 
 	<div class="card-grid">
-		{#each ads as ad}
-			<ExploreCard {ad} />
+		{#each posts as post}
+			<a href="/posts/{post.post_id}" class="post-card">
+				<div class="image-container">
+					<img src={post.file_url} alt={post.title || 'Artwork'} />
+				</div>
+				<div class="card-content">
+					<h3>{post.title || 'Untitled'}</h3>
+					<div class="card-footer">
+						<span class="author">by {post.username}</span>
+						<span class="likes">❤️ {post.likes}</span>
+					</div>
+				</div>
+			</a>
 		{/each}
 	</div>
+
+	{#if posts.length === 0}
+		<p class="no-posts">No posts yet. Be the first to <a href="/create">create one</a>!</p>
+	{/if}
 </div>
 
-<style scoped>
+<style>
 	.explore-container {
 		padding: 2rem;
-		text-align: center;
+		max-width: 1400px;
+		margin: 0 auto;
+	}
+
+	.explore-container h1 {
+		font-size: 2.5rem;
+		margin-bottom: 0.5rem;
+		color: #333;
+	}
+
+	.explore-container > p {
+		color: #666;
+		margin-bottom: 2rem;
 	}
 
 	.card-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 		gap: 2rem;
 		margin-top: 2rem;
+	}
+
+	.post-card {
+		background: white;
+		border-radius: 12px;
+		overflow: hidden;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		transition:
+			transform 0.2s,
+			box-shadow 0.2s;
+		text-decoration: none;
+		color: inherit;
+		display: block;
+	}
+
+	.post-card:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+	}
+
+	.image-container {
+		width: 100%;
+		height: 280px;
+		overflow: hidden;
+		background: #f5f5f5;
+	}
+
+	.image-container img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.card-content {
+		padding: 1rem;
+	}
+
+	.card-content h3 {
+		margin: 0 0 0.75rem 0;
+		font-size: 1.2rem;
+		color: #333;
+	}
+
+	.card-footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 0.9rem;
+	}
+
+	.author {
+		color: #666;
+	}
+
+	.likes {
+		color: #e53e3e;
+	}
+
+	.no-posts {
+		text-align: center;
+		color: #666;
+		margin-top: 3rem;
+		font-size: 1.1rem;
+	}
+
+	.no-posts a {
+		color: #667eea;
+		text-decoration: none;
+	}
+
+	.no-posts a:hover {
+		text-decoration: underline;
 	}
 </style>

@@ -6,13 +6,8 @@
 
 	const links = [
 		{ href: '/', label: 'Home' },
-		{ 
-			label: 'Explore', 
-			dropdown: [
-				{ href: '/explore/gigs', label: 'Explore Gigs' },
-				{ href: '/explore/art', label: 'Explore Art' }
-			]
-		},
+		{ href: '/explore', label: 'Explore' },
+		{ href: '/gigs', label: 'Gigs' },
 		{ href: '/test', label: 'Test page' },
 		{ href: '/about', label: 'About' }
 	]
@@ -21,8 +16,12 @@
 	let menuOpen = $state(false)
 
 	const visibleLinks = $derived(
-		loggedIn && username 
-			? [...links, { href: '/create', label: 'Create' }, { href: `/profile/${username}`, label: 'Profile' }] 
+		loggedIn && username
+			? [
+					...links,
+					{ href: '/create', label: 'Create' },
+					{ href: `/profile/${username}`, label: 'Profile' }
+				]
 			: links
 	)
 </script>
@@ -42,8 +41,8 @@
 	open={menuOpen}
 	links={visibleLinks}
 	pathname={pathname ?? $page.url.pathname}
-	loggedIn={loggedIn}
-	username={username}
+	{loggedIn}
+	{username}
 	on:close={() => (menuOpen = false)}
 />
 

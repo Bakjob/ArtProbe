@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation'
+	import { enhance } from '$app/forms'
 
 	let { data } = $props()
 
@@ -17,8 +18,7 @@
 	const filteredTags = $derived(
 		tagInput.trim().length > 0
 			? existingTags.filter(
-					(tag) =>
-						tag.toLowerCase().includes(tagInput.toLowerCase()) && !tags.includes(tag)
+					(tag) => tag.toLowerCase().includes(tagInput.toLowerCase()) && !tags.includes(tag)
 				)
 			: []
 	)
@@ -77,45 +77,15 @@
 		// Handle Enter key
 		else if (e.key === 'Enter') {
 			e.preventDefault()
-			if (showSuggestions && selectedSuggestionIndex >= 0 && filteredTags[selectedSuggestionIndex]) {
+			if (
+				showSuggestions &&
+				selectedSuggestionIndex >= 0 &&
+				filteredTags[selectedSuggestionIndex]
+			) {
 				addTag(filteredTags[selectedSuggestionIndex])
 			} else {
 				addTag(tagInput)
 			}
-		}
-	}
-
-	async function handleSubmit() {
-		isSubmitting = true
-		errorMessage = ''
-
-		try {
-			if (!imageInput?.files?.[0]) {
-				throw new Error('Please select an image')
-			}
-
-			const formData = new FormData()
-			formData.append('image', imageInput.files[0])
-			formData.append('title', title)
-			formData.append('description', description)
-			formData.append('tags', JSON.stringify(tags))
-
-			const response = await fetch('/api/posts', {
-				method: 'POST',
-				body: formData
-			})
-
-			if (!response.ok) {
-				const error = await response.json()
-				throw new Error(error.message || 'Failed to create post')
-			}
-
-			const result = await response.json()
-			goto(`/posts/${result.postId}`)
-		} catch (error) {
-			errorMessage = error.message
-		} finally {
-			isSubmitting = false
 		}
 	}
 </script>
@@ -126,20 +96,40 @@
 		<p class="subtitle">Share your artwork with the community</p>
 
 		<form
-			onsubmit={(e) => {
-				e.preventDefault()
-				handleSubmit()
+			method="POST"
+			action="?/create"
+			enctype="multipart/form-data"
+			use:enhance={() => {
+				isSubmitting = true
+				return async ({ result, update }) => {
+					isSubmitting = false
+					if (result.type === 'redirect') {
+						goto(result.location)
+					} else if (result.type === 'failure') {
+						errorMessage = result.data?.message || 'Failed to create post'
+					}
+					await update()
+				}
 			}}
 		>
 			<div class="form-group">
 				<label for="image">Upload Image</label>
-				<input type="file" id="image" accept="image/*" bind:this={imageInput} required />
+				<input
+					type="file"
+					id="image"
+					name="image"
+					accept="image/*"
+					bind:this={imageInput}
+					required
+				/>
 			</div>
+
 			<div class="form-group">
 				<label for="title">Title</label>
 				<input
 					type="text"
 					id="title"
+					name="title"
 					bind:value={title}
 					placeholder="Enter a catchy title..."
 					required
@@ -150,11 +140,15 @@
 				<label for="description">Description</label>
 				<textarea
 					id="description"
+					name="description"
 					bind:value={description}
 					placeholder="Tell us about your artwork..."
 					required
 				></textarea>
 			</div>
+
+			<!-- Hidden input for tags -->
+			<input type="hidden" name="tags" value={JSON.stringify(tags)} />
 
 			<div class="form-group">
 				<label for="tags">Tags</label>
@@ -202,7 +196,9 @@
 						</div>
 					{/if}
 				</div>
-				<small class="hint">Press Space, Comma, or Enter to add a tag. Use ↑↓ to navigate suggestions.</small>
+				<small class="hint"
+					>Press Space, Comma, or Enter to add a tag. Use ↑↓ to navigate suggestions.</small
+				>
 			</div>
 
 			<button type="submit" disabled={isSubmitting} class="submit-btn">
