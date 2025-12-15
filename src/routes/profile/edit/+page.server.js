@@ -1,6 +1,8 @@
 import { getUserBySession } from '$lib/server/auth.js'
 import { redirect } from '@sveltejs/kit'
 import pool from '$lib/server/db.js'
+import { r2 } from '$lib/server/r2.js'
+import { DeleteObjectCommand } from '@aws-sdk/client-s3'
 
 export async function load({ cookies }) {
 	const sessionId = cookies.get('session')
@@ -73,6 +75,30 @@ export const actions = {
 		}
 
 		try {
+			// Get all posts by user to delete images from R2
+			const postsResult = await pool.query(
+				'SELECT file_url FROM posts WHERE user_id = $1',
+				[user.user_id]
+			)
+
+			// Delete all images from R2
+			for (const post of postsResult.rows) {
+				try {
+					// Extract the key from the full URL
+					// URL format: https://pub-xxx.r2.dev/posts/filename.ext
+					const url = new URL(post.file_url)
+					const key = url.pathname.substring(1) // Remove leading slash
+
+					await r2.send(new DeleteObjectCommand({
+						Bucket: 'artprobe-bucket',
+						Key: key
+					}))
+				} catch (deleteError) {
+					console.error('Error deleting image from R2:', deleteError)
+					// Continue even if one image fails to delete
+				}
+			}
+
 			// Delete user (CASCADE will handle related records)
 			await pool.query('DELETE FROM users WHERE user_id = $1', [user.user_id])
 
