@@ -61,7 +61,14 @@
 	<div class="danger-zone">
 		<h3>Danger Zone</h3>
 		<p>Once you delete your profile, there is no going back. Please be certain.</p>
-		<form method="POST" action="?/delete" onsubmit={(e) => { if (!confirm('Are you sure you want to delete your profile? This action cannot be undone.')) e.preventDefault(); }}>
+		<form
+			method="POST"
+			action="?/delete"
+			onsubmit={(e) => {
+				if (!confirm('Are you sure you want to delete your profile? This action cannot be undone.'))
+					e.preventDefault()
+			}}
+		>
 			<button type="submit" class="delete-button">Delete Profile</button>
 		</form>
 	</div>

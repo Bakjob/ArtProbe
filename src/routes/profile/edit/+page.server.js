@@ -76,10 +76,9 @@ export const actions = {
 
 		try {
 			// Get all posts by user to delete images from R2
-			const postsResult = await pool.query(
-				'SELECT file_url FROM posts WHERE user_id = $1',
-				[user.user_id]
-			)
+			const postsResult = await pool.query('SELECT file_url FROM posts WHERE user_id = $1', [
+				user.user_id
+			])
 
 			// Delete all images from R2
 			for (const post of postsResult.rows) {
@@ -89,10 +88,12 @@ export const actions = {
 					const url = new URL(post.file_url)
 					const key = url.pathname.substring(1) // Remove leading slash
 
-					await r2.send(new DeleteObjectCommand({
-						Bucket: 'artprobe-bucket',
-						Key: key
-					}))
+					await r2.send(
+						new DeleteObjectCommand({
+							Bucket: 'artprobe-bucket',
+							Key: key
+						})
+					)
 				} catch (deleteError) {
 					console.error('Error deleting image from R2:', deleteError)
 					// Continue even if one image fails to delete
