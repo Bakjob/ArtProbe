@@ -65,9 +65,16 @@ CREATE TABLE posts (
     user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
     file_url TEXT NOT NULL,
     title VARCHAR(255),
-    likes INT DEFAULT 0,
     mature_content BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Stores likes: one row per (post, user). Backend handles toggle logic.
+CREATE TABLE post_likes (
+    post_id INT REFERENCES posts(post_id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    PRIMARY KEY (post_id, user_id)
 );
 
 -- ============================
