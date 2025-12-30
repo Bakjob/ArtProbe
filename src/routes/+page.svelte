@@ -1,3 +1,9 @@
+<script>
+	import LikeButton from '$lib/components/LikeButton.svelte'
+	
+	let { data } = $props()
+</script>
+
 <main>
 	<!-- HERO -->
 	<section class="hero">
@@ -29,6 +35,26 @@
 				<h3>3D art</h3>
 				<p>Shapes that come alive in 3D</p>
 			</article>
+		</div>
+	</section>
+
+	<!-- TRENDING POSTS -->
+	<section class="trending">
+		<h2>Trending Posts</h2>
+
+		<div class="trending-grid">
+			{#each data.trendingPosts as post}
+				<div class="trending-card">
+					<a href="/posts/{post.post_id}" class="trending-link">
+						<img src={post.file_url} alt={post.title || 'Artwork'} />
+						<div class="trending-info">
+							<h4>{post.title || 'Untitled'}</h4>
+							<p>by {post.username}</p>
+						</div>
+					</a>
+					<LikeButton {post} user={data.user} />
+				</div>
+			{/each}
 		</div>
 	</section>
 
@@ -113,6 +139,74 @@
 	.card p {
 		margin: 0 0.8rem 1rem;
 		font-size: 0.9rem;
+	}
+
+	/* TRENDING POSTS */
+	.trending {
+		padding: 4rem 3rem;
+	}
+
+	.trending h2 {
+		text-align: center;
+		margin-bottom: 2rem;
+	}
+
+	.trending-grid {
+		display: flex;
+		overflow-x: auto;
+		gap: 1rem;
+		padding-bottom: 1rem;
+		scrollbar-width: thin;
+		scrollbar-color: #ccc transparent;
+	}
+
+	.trending-card {
+		flex: 0 0 200px;
+		background: white;
+		border-radius: 8px;
+		overflow: hidden;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		transition: transform 0.2s;
+		position: relative;
+	}
+
+	.trending-card:hover {
+		transform: translateY(-2px);
+	}
+
+	.trending-link {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.trending-link img {
+		width: 100%;
+		height: 150px;
+		object-fit: cover;
+		display: block;
+	}
+
+	.trending-info {
+		padding: 0.75rem;
+	}
+
+	.trending-info h4 {
+		margin: 0 0 0.5rem 0;
+		font-size: 1rem;
+		color: #333;
+	}
+
+	.trending-info p {
+		margin: 0 0 0.5rem 0;
+		font-size: 0.9rem;
+		color: #666;
+	}
+
+	.trending-card > :global(.like-btn) {
+		position: absolute;
+		bottom: 0.75rem;
+		right: 0.75rem;
 	}
 
 	/* ARTISTS */

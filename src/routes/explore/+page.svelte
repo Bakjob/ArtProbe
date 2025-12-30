@@ -10,18 +10,20 @@
 
 	<div class="card-grid">
 		{#each posts as post}
-			<a href="/posts/{post.post_id}" class="post-card">
-				<div class="image-container">
-					<img src={post.file_url} alt={post.title || 'Artwork'} />
-				</div>
-				<div class="card-content">
-					<h3>{post.title || 'Untitled'}</h3>
-					<div class="card-footer">
-						<span class="author">by {post.username}</span>
-						<LikeButton {post} user={data.user} />
+			<div class="post-card">
+				<a href="/posts/{post.post_id}" class="post-link">
+					<div class="image-container">
+						<img src={post.file_url} alt={post.title || 'Artwork'} />
 					</div>
-				</div>
-			</a>
+					<div class="card-content">
+						<h3>{post.title || 'Untitled'}</h3>
+						<div class="card-footer">
+							<span class="author">by {post.username}</span>
+						</div>
+					</div>
+				</a>
+				<LikeButton {post} user={data.user} />
+			</div>
 		{/each}
 	</div>
 
@@ -63,14 +65,18 @@
 		transition:
 			transform 0.2s,
 			box-shadow 0.2s;
-		text-decoration: none;
-		color: inherit;
-		display: block;
+		position: relative;
 	}
 
 	.post-card:hover {
 		transform: translateY(-4px);
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+	}
+
+	.post-link {
+		text-decoration: none;
+		color: inherit;
+		display: block;
 	}
 
 	.image-container {
@@ -105,6 +111,12 @@
 
 	.author {
 		color: #666;
+	}
+
+	.post-card > :global(.like-btn) {
+		position: absolute;
+		bottom: 1rem;
+		right: 1rem;
 	}
 
 	.no-posts {

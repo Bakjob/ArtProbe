@@ -2,21 +2,40 @@
 	import { onMount } from 'svelte'
 	let { post, user } = $props()
 
+	let liked = $state(false)
+	let likes = $derived(Number(post.likes) || 0)
+
 	onMount(async () => {
 		// Hämta liked-status för posten om användaren är inloggad
 		if (user) {
 			try {
 				const response = await fetch(`/api/handlelikes?postId=${post.post_id}`)
 				const result = await response.json()
+				liked = result.liked
+				// Uppdatera post också för konsistens
 				post.liked = result.liked
 			} catch (error) {
 				console.error('Error fetching like status:', error)
+				liked = false
+				post.liked = false
 			}
+		} else {
+			liked = false
+			post.liked = false
 		}
 	})
 
-	async function toggleLike() {
-		console.log('Toggling like for post:', post.post_id)
+	async function toggleLike(event) {
+		event.stopPropagation(); // Förhindra att klicket bubblar upp till föräldra-element (t.ex. länkar)
+
+		// Optimistisk uppdatering: Uppdatera UI direkt
+		const wasLiked = liked;
+		liked = !wasLiked;
+		likes += wasLiked ? -1 : 1;
+		// Uppdatera post också
+		post.liked = liked;
+		post.likes = likes;
+
 		try {
 			const response = await fetch('/api/handlelikes', {
 				method: 'POST',
@@ -24,22 +43,35 @@
 				body: JSON.stringify({ postId: post.post_id })
 			});
 			const result = await response.json();
-			console.log('API response:', result)
 			if (result.error) {
 				alert('You must be logged in to like posts');
+				// Återställ optimistisk uppdatering vid fel
+				liked = wasLiked;
+				likes += wasLiked ? 1 : -1;
+				post.liked = liked;
+				post.likes = likes;
 				return;
 			}
-			post.liked = result.liked;
-			post.likes += result.liked ? 1 : -1;
-			console.log('Updated post:', post)
+			// Uppdatera med korrekt värde från servern (om det skiljer sig)
+			if (result.liked !== liked) {
+				liked = result.liked;
+				likes += result.liked ? 1 : -1;
+				post.liked = liked;
+				post.likes = likes;
+			}
 		} catch (error) {
 			console.error('Error toggling like:', error);
+			// Återställ vid nätverksfel
+			liked = wasLiked;
+			likes += wasLiked ? 1 : -1;
+			post.liked = liked;
+			post.likes = likes;
 		}
 	}
 </script>
 
-<button class="like-btn" class:liked={post.liked} onclick={toggleLike}>
-	{post.liked ? '❤️' : '🤍'} {post.likes}
+<button class="like-btn" class:liked onclick={toggleLike}>
+	{liked ? '❤️' : '🤍'} {likes}
 </button>
 
 <style>
