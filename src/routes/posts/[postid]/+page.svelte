@@ -1,6 +1,7 @@
 <script>
+	import LikeButton from '$lib/components/LikeButton.svelte'
 	let { data } = $props()
-	const post = $derived(data.post)
+	let post = $derived(data.post)
 </script>
 
 {#if post}
@@ -34,7 +35,7 @@
 			{/if}
 
 			<div class="post-stats">
-				<span class="likes">❤️ {post.likes}</span>
+				<LikeButton {post} user={data.user} />
 			</div>
 		</div>
 	</div>
@@ -145,11 +146,6 @@
 	.post-stats {
 		padding-top: 1rem;
 		border-top: 1px solid #eee;
-	}
-
-	.likes {
-		font-size: 1.1rem;
-		color: #666;
 	}
 
 	.error {

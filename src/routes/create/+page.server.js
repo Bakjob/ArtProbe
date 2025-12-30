@@ -72,8 +72,8 @@ export const actions = {
 
 			// Insert post into database
 			const postResult = await pool.query(
-				`INSERT INTO posts (user_id, file_url, title, likes, created_at)
-			 VALUES ($1, $2, $3, 0, NOW())
+				`INSERT INTO posts (user_id, file_url, title, created_at)
+			 VALUES ($1, $2, $3, NOW())
 			 RETURNING post_id`,
 				[userId, fileUrl, title]
 			)

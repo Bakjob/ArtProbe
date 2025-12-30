@@ -10,11 +10,16 @@ export async function load({ params }) {
 				p.post_id,
 				p.title,
 				p.file_url,
-				p.likes,
+				COALESCE(l.like_count, 0) AS likes,
 				p.created_at,
 				u.username
 			FROM posts p
 			JOIN users u ON p.user_id = u.user_id
+			LEFT JOIN (
+				SELECT post_id, COUNT(*) AS like_count
+				FROM post_likes
+				GROUP BY post_id
+			) l ON p.post_id = l.post_id
 			WHERE p.post_id = $1`,
 			[postid]
 		)

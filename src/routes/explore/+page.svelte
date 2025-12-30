@@ -1,4 +1,5 @@
 <script>
+	import LikeButton from '$lib/components/LikeButton.svelte'
 	let { data } = $props()
 	let posts = $derived(data.posts)
 </script>
@@ -17,7 +18,7 @@
 					<h3>{post.title || 'Untitled'}</h3>
 					<div class="card-footer">
 						<span class="author">by {post.username}</span>
-						<span class="likes">❤️ {post.likes}</span>
+						<LikeButton {post} user={data.user} />
 					</div>
 				</div>
 			</a>
@@ -104,10 +105,6 @@
 
 	.author {
 		color: #666;
-	}
-
-	.likes {
-		color: #e53e3e;
 	}
 
 	.no-posts {
