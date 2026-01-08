@@ -1,25 +1,69 @@
 <script>
-	let { user, showEditButton = false } = $props()
+	let {
+		user = null,
+		gigs = undefined,
+		posts = undefined,
+		gender = undefined,
+		age = undefined,
+		createdAt = undefined,
+		showEditButton = false
+	} = $props()
+
+	function asOptionalString(value) {
+		return typeof value === 'string' ? value : undefined
+	}
+
+	function asOptionalNumber(value) {
+		return typeof value === 'number' && Number.isFinite(value) ? value : undefined
+	}
+
+	function asOptionalDate(value) {
+		if (!value) return undefined
+		const d = value instanceof Date ? value : new Date(value)
+		return Number.isNaN(d.getTime()) ? undefined : d
+	}
+
+	let username = $derived(asOptionalString(user?.username) ?? '')
+	let avatarLetter = $derived(username ? username.charAt(0).toUpperCase() : '?')
+	let resolvedBio = $derived(asOptionalString(user?.bio) ?? '')
+
+	let resolvedAge = $derived(age != null ? asOptionalNumber(age) : asOptionalNumber(user?.age))
+	let resolvedGender = $derived(gender != null ? asOptionalString(gender) : asOptionalString(user?.gender))
+	let resolvedCreatedAt = $derived(
+		asOptionalDate(createdAt) ?? asOptionalDate(user?.created_at) ?? asOptionalDate(user?.createdAt)
+	)
+
+	let gigsCount = $derived(Array.isArray(gigs) ? gigs.length : Array.isArray(user?.gigs) ? user.gigs.length : undefined)
+	let postsCount = $derived(Array.isArray(posts) ? posts.length : Array.isArray(user?.posts) ? user.posts.length : undefined)
 </script>
 
 <div class="profile-header">
 	<div class="avatar">
-		{user.username.charAt(0).toUpperCase()}
+		{avatarLetter}
 	</div>
 
 	<div class="user-info">
-		<h1>{user.username}</h1>
+		<h1>{username || 'Unknown user'}</h1>
 
-		{#if user.bio}
-			<p class="bio">{user.bio}</p>
+		{#if resolvedBio}
+			<p class="bio">{resolvedBio}</p>
 		{/if}
 
 		<div class="meta">
-			{#if user.age}
-				<span>🎂 Age: {user.age}</span>
+			{#if resolvedAge != null}
+				<span>🎂 Age: {resolvedAge}</span>
 			{/if}
-			{#if user.gender}
-				<span>⚧ {user.gender}</span>
+			{#if resolvedGender}
+				<span>⚧ {resolvedGender}</span>
+			{/if}
+			{#if resolvedCreatedAt}
+				<span>📅 Joined: {resolvedCreatedAt.toLocaleDateString()}</span>
+			{/if}
+			{#if gigsCount != null}
+				<span>🛠️ Gigs: {gigsCount}</span>
+			{/if}
+			{#if postsCount != null}
+				<span>🖼️ Posts: {postsCount}</span>
 			{/if}
 		</div>
 	</div>

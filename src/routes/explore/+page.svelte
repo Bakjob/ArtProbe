@@ -32,7 +32,7 @@
 	{/if}
 </div>
 
-<style>
+<style scoped>
 	.explore-container {
 		padding: 2rem;
 		max-width: 1400px;

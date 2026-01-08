@@ -1,21 +1,71 @@
 <script>
+	import InfoCard from '$lib/components/profile/InfoCard.svelte'
 	import ProfileHeader from '$lib/components/profile/ProfileHeader.svelte'
-	import ProfileStats from '$lib/components/profile/ProfileStats.svelte'
-	import LanguagesSection from '$lib/components/profile/LanguagesSection.svelte'
-	import SkillsSection from '$lib/components/profile/SkillsSection.svelte'
-	import PortfolioSection from '$lib/components/profile/PortfolioSection.svelte'
-	import GigsSection from '$lib/components/profile/GigsSection.svelte'
 
 	let { data } = $props()
 </script>
 
 <div class="profile-page">
-	<ProfileHeader user={data.user} showEditButton={true} />
-	<ProfileStats user={data.user} />
-	<LanguagesSection languages={data.languages} />
-	<SkillsSection skills={data.skills} />
-	<PortfolioSection portfolio={data.portfolio} />
-	<GigsSection gigs={data.gigs} />
+	<div class="header">
+		<ProfileHeader
+			user={data.profile}
+			gigs={data.profile?.gigs}
+			posts={data.profile?.posts}
+			gender={data.profile?.gender}
+			age={data.profile?.age}
+			createdAt={data.profile?.created_at}
+			showEditButton={data.canEditProfile}
+		/>
+	</div>
+
+	{#if data.canEditProfile}
+		<!-- Lägg ägar-specifika saker här -->
+	{/if}
+
+	<div class="cards-grid">
+		<InfoCard
+			color="#f9f9f9"
+			text="gigs"
+			href={`/profile/${data.profile.username}/gigs`}
+			symbol="/placeholder.png"
+			onError={(e) => console.log('InfoCard error', e)}
+		/>
+		<InfoCard
+			color="#f9f9f9"
+			text="orders"
+			href={`/profile/${data.profile.username}/orders`}
+			symbol="/placeholder.png"
+			onError={(e) => console.log('InfoCard error', e)}
+		/>
+		<InfoCard
+			color="#f9f9f9"
+			text="reviews"
+			href={`/profile/${data.profile.username}/reviews`}
+			symbol="/placeholder.png"
+			onError={(e) => console.log('InfoCard error', e)}
+		/>
+		<InfoCard
+			color="#f9f9f9"
+			text="wallet"
+			href={`/profile/${data.profile.username}/wallet`}
+			symbol="/placeholder.png"
+			onError={(e) => console.log('InfoCard error', e)}
+		/>
+		<InfoCard
+			color="#f9f9f9"
+			text="stats"
+			href={`/profile/${data.profile.username}/stats`}
+			symbol="/placeholder.png"
+			onError={(e) => console.log('InfoCard error', e)}
+		/>
+		<InfoCard
+			color="#f9f9f9"
+			text="badges"
+			href={`/profile/${data.profile.username}/badges`}
+			symbol="/placeholder.png"
+			onError={(e) => console.log('ProfileCard error', e)}
+		/>
+	</div>
 </div>
 
 <style>
@@ -23,5 +73,20 @@
 		max-width: 1100px;
 		margin: 2rem auto;
 		padding: 0 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.header {
+		width: 100%;
+	}
+
+	.cards-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		grid-template-rows: repeat(2, auto);
+		gap: 1.5rem;
+		align-items: start;
 	}
 </style>

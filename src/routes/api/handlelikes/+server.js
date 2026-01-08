@@ -40,6 +40,7 @@ async function getLikeStatus(userId, postId) {
     }
 }
 
+// Hantera POST-förfrågningar för att toggle like
 export async function POST({ request, cookies }) {
     const sessionId = cookies.get('session');
     console.log('Session ID:', sessionId)
@@ -65,6 +66,7 @@ export async function POST({ request, cookies }) {
     }
 }
 
+// Hantera GET-förfrågningar för att hämta likes-status
 export async function GET({ url, cookies }) {
     const sessionId = cookies.get('session');
     const user = sessionId ? await getUserBySession(sessionId) : null;

@@ -216,7 +216,7 @@
 	</div>
 </div>
 
-<style>
+<style scoped>
 	.container {
 		max-width: 700px;
 		margin: 2rem auto;

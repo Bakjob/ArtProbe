@@ -16,7 +16,8 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     age INT,
     gender VARCHAR(20),
-    bio TEXT
+    bio TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE sessions (
@@ -97,8 +98,18 @@ CREATE TABLE gig_packages (
     gig_id INT REFERENCES gigs(gig_id) ON DELETE CASCADE,
     type VARCHAR(50) NOT NULL, -- basic / standard / premium
     price NUMERIC(10,2) NOT NULL,
-    revisions_amount INT NOT NULL,
-    features TEXT NOT NULL
+    revisions_amount INT NOT NULL
+);
+
+CREATE TABLE gig_package_features (
+    gig_package_id INT REFERENCES gig_packages(gig_package_id) ON DELETE CASCADE,
+    feature_id INT REFERENCES features(feature_id) ON DELETE CASCADE,
+    PRIMARY KEY (gig_package_id, feature_id)
+);
+
+CREATE TABLE features (
+    feature_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL
 );
 
 -- ============================
