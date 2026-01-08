@@ -84,7 +84,7 @@
 	/* HERO */
 	.hero {
 		height: 70vh;
-		background-image: url('The tenebroeus.png');
+		background-image: url('Commander.png');
 		background-size: cover;
 		background-position: center;
 		display: flex;
