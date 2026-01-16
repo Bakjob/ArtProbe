@@ -2,8 +2,34 @@ import pool from '$lib/server/db.js'
 
 export async function load() {
 	try {
+		// Hämta trending tags: mest använda, begränsa till 10
+		// För varje tag, hämta ett representativt inläggs fil_url med flest likes
+		const trendingTags = await pool.query(
+			`SELECT
+				t.name AS tag,
+				COUNT(*) AS usage_count,
+				(
+					SELECT p.file_url
+					FROM post_tags pt2
+					JOIN posts p ON pt2.post_id = p.post_id
+					LEFT JOIN (
+						SELECT post_id, COUNT(*) AS like_count
+						FROM post_likes
+						GROUP BY post_id
+					) l ON p.post_id = l.post_id
+					WHERE pt2.tag_id = t.tag_id
+					ORDER BY COALESCE(l.like_count, 0) DESC, RANDOM()
+					LIMIT 1
+				) AS file_url
+			FROM post_tags pt
+			JOIN tags t ON pt.tag_id = t.tag_id
+			GROUP BY t.tag_id, t.name
+			ORDER BY usage_count DESC
+			LIMIT 6`
+		)
+
 		// Hämta trending posts: högst likes, begränsa till 10
-		const trendingResult = await pool.query(
+		const trendingPosts = await pool.query(
 			`SELECT
 				p.post_id,
 				p.title,
@@ -19,16 +45,38 @@ export async function load() {
 				GROUP BY post_id
 			) l ON p.post_id = l.post_id
 			ORDER BY l.like_count DESC, p.created_at DESC
-			LIMIT 10`
+			LIMIT 20`
 		)
 
+		const trendingArtists = await pool.query(
+			`SELECT
+				u.user_id,
+				u.username,
+				u.avatar_url,
+				COALESCE(SUM(l.like_count), 0) AS total_likes
+			FROM users u
+			JOIN posts p ON u.user_id = p.user_id
+			LEFT JOIN (
+				SELECT post_id, COUNT(*) AS like_count
+				FROM post_likes
+				GROUP BY post_id
+			) l ON p.post_id = l.post_id
+			GROUP BY u.user_id, u.username, u.avatar_url
+			ORDER BY total_likes DESC
+			LIMIT 100`
+		)
+	
 		return {
-			trendingPosts: trendingResult.rows
+			trendingPosts: trendingPosts.rows,
+			trendingTags: trendingTags.rows,
+			trendingArtists: trendingArtists.rows
 		}
 	} catch (error) {
 		console.error('Error loading trending posts:', error)
 		return {
-			trendingPosts: []
+			trendingPosts: [],
+			trendingTags: [],
+			trendingArtists: []
 		}
 	}
 }

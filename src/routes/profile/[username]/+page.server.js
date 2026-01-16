@@ -6,7 +6,7 @@ export async function load({ params, cookies }) {
 	const { username } = params
 	const session = cookies.get('session')
 	const viewer = session ? await getUserBySession(session) : null
-	
+
 	try {
 		// Fetch user by username, plus profile fields used on the page
 		const userResult = await pool.query(
@@ -21,7 +21,6 @@ export async function load({ params, cookies }) {
 		// Fetch additional profile data as needed
 		const gigsResult = await pool.query('SELECT * FROM gigs WHERE user_id = $1', [user.user_id])
 		const postsResult = await pool.query('SELECT * FROM posts WHERE user_id = $1', [user.user_id])
-		const reviewsResult = await pool.query('SELECT * FROM reviews WHERE reviewee_id = $1', [user.user_id])
 
 		const canEditProfile = !!viewer?.user_id && viewer.user_id === user.user_id
 
@@ -31,8 +30,7 @@ export async function load({ params, cookies }) {
 			profile: {
 				...user,
 				gigs: gigsResult.rows,
-				posts: postsResult.rows,
-				reviews: reviewsResult.rows
+				posts: postsResult.rows
 			}
 		}
 

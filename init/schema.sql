@@ -17,6 +17,7 @@ CREATE TABLE users (
     age INT,
     gender VARCHAR(20),
     bio TEXT,
+    avatar_url TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -101,15 +102,15 @@ CREATE TABLE gig_packages (
     revisions_amount INT NOT NULL
 );
 
+CREATE TABLE features (
+    feature_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL
+);
+
 CREATE TABLE gig_package_features (
     gig_package_id INT REFERENCES gig_packages(gig_package_id) ON DELETE CASCADE,
     feature_id INT REFERENCES features(feature_id) ON DELETE CASCADE,
     PRIMARY KEY (gig_package_id, feature_id)
-);
-
-CREATE TABLE features (
-    feature_id SERIAL PRIMARY KEY,
-    name VARCHAR(100) UNIQUE NOT NULL
 );
 
 -- ============================
