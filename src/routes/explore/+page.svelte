@@ -1,29 +1,69 @@
 <script>
-	import LikeButton from '$lib/components/LikeButton.svelte'
+	import ExploreCard from '$lib/components/explore/ExploreCard.svelte'
+
 	let { data } = $props()
 	let posts = $derived(data.posts)
+	let activeTags = $derived(data.tags || [])
+	let allTags = $derived(data.allTags || [])
+
+	// Build URL without a specific tag
+	function removeTagUrl(tagToRemove) {
+		const remaining = activeTags.filter(t => t !== tagToRemove)
+		if (remaining.length === 0) return '/explore'
+		return '/explore?' + remaining.map(t => `tag=${encodeURIComponent(t)}`).join('&')
+	}
+
+	// Build URL with an additional tag
+	function addTagUrl(tagToAdd) {
+		const tagLower = tagToAdd.toLowerCase()
+		if (activeTags.includes(tagLower)) return null // Already active
+		const newTags = [...activeTags, tagLower]
+		return '/explore?' + newTags.map(t => `tag=${encodeURIComponent(t)}`).join('&')
+	}
 </script>
 
 <div class="explore-container">
 	<h1>Explore</h1>
-	<p>Discover amazing artworks from our community</p>
+
+	{#if allTags.length > 0}
+		<div class="popular-tags">
+			<span class="popular-label">Popular:</span>
+			{#each allTags as tagObj (tagObj.tag)}
+				{@const isActive = activeTags.includes(tagObj.tag.toLowerCase())}
+				{@const url = isActive ? removeTagUrl(tagObj.tag.toLowerCase()) : addTagUrl(tagObj.tag)}
+				<a
+					href={url}
+					class="popular-tag"
+					class:active={isActive}
+					title={isActive ? 'Remove filter' : `Filter by #${tagObj.tag}`}
+				>
+					#{tagObj.tag}
+					<span class="tag-count">{tagObj.usage_count}</span>
+				</a>
+			{/each}
+		</div>
+	{/if}
+
+	<div class="filter-bar">
+		Filter by tags and discover new artworks
+	</div>
+	{#if activeTags.length > 0}
+		<div class="tag-filter">
+			<span>Filtering by:</span>
+			{#each activeTags as tag (tag)}
+				<a href={removeTagUrl(tag)} class="tag-badge" title="Remove tag">
+					#{tag} <span class="remove-x">×</span>
+				</a>
+			{/each}
+			<a href="/explore" class="clear-btn">Clear all</a>
+		</div>
+	{:else}
+		<p>Discover amazing artworks from our community</p>
+	{/if}
 
 	<div class="card-grid">
-		{#each posts as post}
-			<div class="post-card">
-				<a href="/posts/{post.post_id}" class="post-link">
-					<div class="image-container">
-						<img src={post.file_url} alt={post.title || 'Artwork'} />
-					</div>
-					<div class="card-content">
-						<h3>{post.title || 'Untitled'}</h3>
-						<div class="card-footer">
-							<span class="author">by {post.username}</span>
-						</div>
-					</div>
-				</a>
-				<LikeButton {post} user={data.user} />
-			</div>
+		{#each posts as post (post.post_id)}
+			<ExploreCard {post} user={data.user} />
 		{/each}
 	</div>
 
@@ -56,69 +96,6 @@
 		gap: 2rem;
 		margin-top: 2rem;
 	}
-
-	.post-card {
-		background: white;
-		border-radius: 12px;
-		overflow: hidden;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-		transition:
-			transform 0.2s,
-			box-shadow 0.2s;
-		position: relative;
-	}
-
-	.post-card:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-	}
-
-	.post-link {
-		text-decoration: none;
-		color: inherit;
-		display: block;
-	}
-
-	.image-container {
-		width: 100%;
-		height: 280px;
-		overflow: hidden;
-		background: #f5f5f5;
-	}
-
-	.image-container img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-
-	.card-content {
-		padding: 1rem;
-	}
-
-	.card-content h3 {
-		margin: 0 0 0.75rem 0;
-		font-size: 1.2rem;
-		color: #333;
-	}
-
-	.card-footer {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		font-size: 0.9rem;
-	}
-
-	.author {
-		color: #666;
-	}
-
-	.post-card > :global(.like-btn) {
-		position: absolute;
-		bottom: 1rem;
-		right: 1rem;
-	}
-
 	.no-posts {
 		text-align: center;
 		color: #666;
@@ -133,5 +110,100 @@
 
 	.no-posts a:hover {
 		text-decoration: underline;
+	}
+
+	.tag-filter {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 1.5rem;
+		font-size: 1rem;
+		color: #555;
+	}
+
+	.tag-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.3rem 0.75rem;
+		background: linear-gradient(135deg, #7a5cff, #ff914d);
+		color: #fff;
+		font-weight: 600;
+		border-radius: 999px;
+		font-size: 0.95rem;
+		text-decoration: none;
+		transition: opacity 150ms ease, transform 150ms ease;
+	}
+
+	.tag-badge:hover {
+		opacity: 0.85;
+		transform: scale(0.97);
+	}
+
+	.remove-x {
+		font-size: 1.1rem;
+		line-height: 1;
+		opacity: 0.8;
+	}
+
+	.clear-btn {
+		margin-left: 0.5rem;
+		color: #7a5cff;
+		text-decoration: none;
+		font-size: 0.9rem;
+	}
+
+	.clear-btn:hover {
+		text-decoration: underline;
+	}
+
+	.popular-tags {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 1.5rem;
+		padding: 1rem;
+		background: #f8f8f8;
+		border-radius: 12px;
+	}
+
+	.popular-label {
+		font-weight: 600;
+		color: #555;
+		margin-right: 0.25rem;
+	}
+
+	.popular-tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.35rem 0.7rem;
+		border: 1px solid #ddd;
+		border-radius: 999px;
+		font-size: 0.85rem;
+		color: #444;
+		text-decoration: none;
+		transition: all 150ms ease;
+	}
+
+	.popular-tag:hover {
+		border-color: #7a5cff;
+		color: #7a5cff;
+	}
+
+	.popular-tag.active {
+		background: linear-gradient(135deg, #7a5cff, #ff914d);
+		color: #fff;
+		border-color: transparent;
+	}
+
+	.popular-tag.active:hover {
+		opacity: 0.85;
+	}
+
+	.tag-count {
+		font-size: 0.75rem;
+		opacity: 0.7;
 	}
 </style>

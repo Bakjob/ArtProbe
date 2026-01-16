@@ -20,11 +20,11 @@
 		</div>
 	</section>
 
-	<!-- EXPLORE -->
-	<section class="explore">
-		<h2>Begin exploring</h2>
+	<!-- TRENDING TAGS -->
+	<section class="tags-trending">
+		<h2>Trending Tags</h2>
 
-		<div class="explore-grid">
+		<div class="tag-grid">
 			{#each data.trendingTags as tag}
 				<TagCard {tag} />
 			{/each}
@@ -32,7 +32,7 @@
 	</section>
 
 	<!-- TRENDING POSTS -->
-	<section class="trending">
+	<section class="posts-trending">
 		<h2>Trending Posts</h2>
 
 		<div class="trending-grid">
@@ -42,8 +42,8 @@
 		</div>
 	</section>
 
-	<!-- ARTISTS -->
-	<section class="artists">
+	<!-- TRENDING ARTISTS -->
+	<section class="artists-trending">
 		<h2>Artist Highlights</h2>
 
 		<div class="artist-grid">
@@ -79,27 +79,35 @@
 		padding: 0.4rem 0.8rem;
 		display: inline-block;
 		border: 2px solid #7a5cff;
+		border-radius: 8px;
+		font-weight: 500;
+		color: #7a5cff;
+		background: rgba(122, 92, 255, 0.2);
+		font-size: 1.5rem;
 	}
 
-	/* EXPLORE */
-	.explore {
-		padding: 4rem 3rem;
+	/* TRENDING TAGS */
+	.tags-trending {
+		padding: 2rem 3rem;
 		text-align: center;
 	}
 
-	.explore-grid {
+	.tags-trending h2 {
+		margin-bottom: 2rem;
+	}
+
+	.tag-grid {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 2rem;
-		margin-top: 2rem;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 0.5rem;
 	}
 
 	/* TRENDING POSTS */
-	.trending {
-		padding: 4rem 3rem;
+	.posts-trending {
+		padding: 2rem 3rem;
 	}
 
-	.trending h2 {
+	.posts-trending h2 {
 		text-align: center;
 		margin-bottom: 2rem;
 	}
@@ -114,8 +122,9 @@
 	}
 
 	/* ARTISTS */
-	.artists {
-		padding: 4rem 3rem;
+	.artists-trending {
+		padding: 2rem 3rem;
+		text-align: center;
 	}
 
 	.artist-grid {
