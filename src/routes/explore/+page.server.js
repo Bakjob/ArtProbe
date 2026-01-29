@@ -4,7 +4,7 @@ export async function load({ url }) {
 	// Support multiple tags: ?tag=art&tag=digital or ?tag=art,digital
 	let tags = url.searchParams.getAll('tag')
 	// Also split comma-separated values
-	tags = tags.flatMap(t => t.split(',').map(s => s.trim().toLowerCase())).filter(Boolean)
+	tags = tags.flatMap((t) => t.split(',').map((s) => s.trim().toLowerCase())).filter(Boolean)
 	// Remove duplicates
 	tags = [...new Set(tags)]
 

@@ -1,18 +1,18 @@
 <script>
-    let gigs = [];
+	let gigs = []
 </script>
 
 <div class="container">
-    <h1>Gigs</h1>
-    <p>No gigs yet. Check back soon!</p>
+	<h1>Gigs</h1>
+	<p>No gigs yet. Check back soon!</p>
 </div>
 
 <style>
-    .container {
-        padding: 2rem;
-    }
+	.container {
+		padding: 2rem;
+	}
 
-    h1 {
-        margin-bottom: 1rem;
-    }
+	h1 {
+		margin-bottom: 1rem;
+	}
 </style>

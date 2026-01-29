@@ -78,7 +78,6 @@
 	}
 </script>
 
-
 {#if safeHref}
 	<a
 		class="profile-card"

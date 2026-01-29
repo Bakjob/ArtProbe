@@ -3,9 +3,9 @@
 	import TagCard from '$lib/components/home/TagCard.svelte'
 	import PostCard from '$lib/components/home/PostCard.svelte'
 	import ArtistCard from '$lib/components/home/ArtistCard.svelte'
-	
+
 	let { data } = $props()
-	
+
 	$effect(() => {
 		console.log('Home page data:', data)
 	})

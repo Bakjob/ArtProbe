@@ -43,10 +43,10 @@
 				<input id="delivery_days" name="delivery_days" type="number" min="1" required />
 			</div>
 
-            <div class="form-group">
-                <label for="tags">Tags</label>
-                <input id="tags" name="tags" type="text" required />
-            </div>
+			<div class="form-group">
+				<label for="tags">Tags</label>
+				<input id="tags" name="tags" type="text" required />
+			</div>
 
 			<button class="submit" type="submit" disabled={isSubmitting}>
 				{isSubmitting ? 'Creating…' : 'Create gig'}

@@ -8,7 +8,7 @@ import pool from './db.js'
  * @param {string} username
  * @param {string} password
  * @param {string} email
- * @returns {Promise<{success: boolean, error?: string, userId?: string}>}
+ * @returns {Promise<{success: boolean, error?: string, userId?: string, sessionId?: string}>}
  */
 export async function registerUser(username, password, email) {
 	// Validate input
@@ -45,7 +45,17 @@ export async function registerUser(username, password, email) {
 			[userId, username, email, passwordHash]
 		)
 
-		return { success: true, userId: result.rows[0].user_id }
+		// Create session for the new user
+		const sessionId = randomUUID()
+		const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+
+		await pool.query('INSERT INTO sessions (id, user_id, expires_at) VALUES ($1, $2, $3)', [
+			sessionId,
+			result.rows[0].user_id,
+			expiresAt
+		])
+
+		return { success: true, userId: result.rows[0].user_id, sessionId }
 	} catch (error) {
 		console.error('Registration error:', error)
 		return { success: false, error: 'Server error during registration' }

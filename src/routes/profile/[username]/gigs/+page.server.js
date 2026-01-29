@@ -8,10 +8,9 @@ export async function load({ params, cookies }) {
 	const viewer = session ? await getUserBySession(session) : null
 
 	try {
-		const userResult = await pool.query(
-			'SELECT user_id, username FROM users WHERE username = $1',
-			[username]
-		)
+		const userResult = await pool.query('SELECT user_id, username FROM users WHERE username = $1', [
+			username
+		])
 
 		if (userResult.rows.length === 0) {
 			throw error(404, 'User not found')

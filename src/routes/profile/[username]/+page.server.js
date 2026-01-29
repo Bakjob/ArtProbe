@@ -33,7 +33,6 @@ export async function load({ params, cookies }) {
 				posts: postsResult.rows
 			}
 		}
-
 	} catch (err) {
 		console.error('Error:', err)
 		throw error(500, 'Failed to load seller stats')

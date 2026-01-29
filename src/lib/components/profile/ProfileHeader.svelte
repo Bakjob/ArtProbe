@@ -28,13 +28,19 @@
 	let resolvedBio = $derived(asOptionalString(user?.bio) ?? '')
 
 	let resolvedAge = $derived(age != null ? asOptionalNumber(age) : asOptionalNumber(user?.age))
-	let resolvedGender = $derived(gender != null ? asOptionalString(gender) : asOptionalString(user?.gender))
+	let resolvedGender = $derived(
+		gender != null ? asOptionalString(gender) : asOptionalString(user?.gender)
+	)
 	let resolvedCreatedAt = $derived(
 		asOptionalDate(createdAt) ?? asOptionalDate(user?.created_at) ?? asOptionalDate(user?.createdAt)
 	)
 
-	let gigsCount = $derived(Array.isArray(gigs) ? gigs.length : Array.isArray(user?.gigs) ? user.gigs.length : undefined)
-	let postsCount = $derived(Array.isArray(posts) ? posts.length : Array.isArray(user?.posts) ? user.posts.length : undefined)
+	let gigsCount = $derived(
+		Array.isArray(gigs) ? gigs.length : Array.isArray(user?.gigs) ? user.gigs.length : undefined
+	)
+	let postsCount = $derived(
+		Array.isArray(posts) ? posts.length : Array.isArray(user?.posts) ? user.posts.length : undefined
+	)
 </script>
 
 <div class="profile-header">

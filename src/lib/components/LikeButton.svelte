@@ -26,52 +26,53 @@
 	})
 
 	async function toggleLike(event) {
-		event.stopPropagation(); // Förhindra att klicket bubblar upp till föräldra-element (t.ex. länkar)
+		event.stopPropagation() // Förhindra att klicket bubblar upp till föräldra-element (t.ex. länkar)
 
 		// Optimistisk uppdatering: Uppdatera UI direkt
-		const wasLiked = liked;
-		liked = !wasLiked;
-		likes += wasLiked ? -1 : 1;
+		const wasLiked = liked
+		liked = !wasLiked
+		likes += wasLiked ? -1 : 1
 		// Uppdatera post också
-		post.liked = liked;
-		post.likes = likes;
+		post.liked = liked
+		post.likes = likes
 
 		try {
 			const response = await fetch('/api/handlelikes', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ postId: post.post_id })
-			});
-			const result = await response.json();
+			})
+			const result = await response.json()
 			if (result.error) {
-				alert('You must be logged in to like posts');
+				alert('You must be logged in to like posts')
 				// Återställ optimistisk uppdatering vid fel
-				liked = wasLiked;
-				likes += wasLiked ? 1 : -1;
-				post.liked = liked;
-				post.likes = likes;
-				return;
+				liked = wasLiked
+				likes += wasLiked ? 1 : -1
+				post.liked = liked
+				post.likes = likes
+				return
 			}
 			// Uppdatera med korrekt värde från servern (om det skiljer sig)
 			if (result.liked !== liked) {
-				liked = result.liked;
-				likes += result.liked ? 1 : -1;
-				post.liked = liked;
-				post.likes = likes;
+				liked = result.liked
+				likes += result.liked ? 1 : -1
+				post.liked = liked
+				post.likes = likes
 			}
 		} catch (error) {
-			console.error('Error toggling like:', error);
+			console.error('Error toggling like:', error)
 			// Återställ vid nätverksfel
-			liked = wasLiked;
-			likes += wasLiked ? 1 : -1;
-			post.liked = liked;
-			post.likes = likes;
+			liked = wasLiked
+			likes += wasLiked ? 1 : -1
+			post.liked = liked
+			post.likes = likes
 		}
 	}
 </script>
 
 <button class="like-btn" class:liked onclick={toggleLike}>
-	{liked ? '❤️' : '🤍'} {likes}
+	{liked ? '❤️' : '🤍'}
+	{likes}
 </button>
 
 <style>

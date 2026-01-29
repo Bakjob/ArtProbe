@@ -8,9 +8,9 @@
 
 	// Build URL without a specific tag
 	function removeTagUrl(tagToRemove) {
-		const remaining = activeTags.filter(t => t !== tagToRemove)
+		const remaining = activeTags.filter((t) => t !== tagToRemove)
 		if (remaining.length === 0) return '/explore'
-		return '/explore?' + remaining.map(t => `tag=${encodeURIComponent(t)}`).join('&')
+		return '/explore?' + remaining.map((t) => `tag=${encodeURIComponent(t)}`).join('&')
 	}
 
 	// Build URL with an additional tag
@@ -18,7 +18,7 @@
 		const tagLower = tagToAdd.toLowerCase()
 		if (activeTags.includes(tagLower)) return null // Already active
 		const newTags = [...activeTags, tagLower]
-		return '/explore?' + newTags.map(t => `tag=${encodeURIComponent(t)}`).join('&')
+		return '/explore?' + newTags.map((t) => `tag=${encodeURIComponent(t)}`).join('&')
 	}
 </script>
 
@@ -44,9 +44,7 @@
 		</div>
 	{/if}
 
-	<div class="filter-bar">
-		Filter by tags and discover new artworks
-	</div>
+	<div class="filter-bar">Filter by tags and discover new artworks</div>
 	{#if activeTags.length > 0}
 		<div class="tag-filter">
 			<span>Filtering by:</span>
@@ -132,7 +130,9 @@
 		border-radius: 999px;
 		font-size: 0.95rem;
 		text-decoration: none;
-		transition: opacity 150ms ease, transform 150ms ease;
+		transition:
+			opacity 150ms ease,
+			transform 150ms ease;
 	}
 
 	.tag-badge:hover {

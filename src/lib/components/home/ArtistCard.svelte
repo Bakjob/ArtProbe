@@ -18,7 +18,7 @@
 	const href = $derived(username ? `/profile/${encodeURIComponent(username)}` : '/profile')
 </script>
 
-<a class="card" href={href} aria-label={username ? `View profile ${username}` : 'View profile'}>
+<a class="card" {href} aria-label={username ? `View profile ${username}` : 'View profile'}>
 	<div class="avatar" aria-hidden="true">
 		{#if avatarUrl}
 			<img class="avatar-img" src={avatarUrl} alt="" loading="lazy" />

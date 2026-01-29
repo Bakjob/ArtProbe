@@ -65,7 +65,7 @@ export async function load() {
 			ORDER BY total_likes DESC
 			LIMIT 100`
 		)
-	
+
 		return {
 			trendingPosts: trendingPosts.rows,
 			trendingTags: trendingTags.rows,

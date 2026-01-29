@@ -15,12 +15,7 @@
 	let menuOpen = $state(false)
 
 	const visibleLinks = $derived(
-		loggedIn && username
-			? [
-					...links,
-					{ href: `/profile/${username}`, label: 'Profile' }
-				]
-			: links
+		loggedIn && username ? [...links, { href: `/profile/${username}`, label: 'Profile' }] : links
 	)
 </script>
 

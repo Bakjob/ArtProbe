@@ -3,7 +3,9 @@
 
 	const tagName = $derived(typeof tag === 'string' ? tag : (tag?.tag ?? tag?.name ?? ''))
 	const fileUrl = $derived(tag?.file_url ?? tag?.image_url ?? null)
-	const usageCount = $derived(typeof tag === 'object' && tag?.usage_count ? Number(tag.usage_count) : null)
+	const usageCount = $derived(
+		typeof tag === 'object' && tag?.usage_count ? Number(tag.usage_count) : null
+	)
 
 	const href = $derived(tagName ? `/explore?tag=${encodeURIComponent(tagName)}` : '/explore')
 </script>

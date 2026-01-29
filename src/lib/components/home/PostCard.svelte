@@ -9,7 +9,7 @@
 </script>
 
 <div class="card">
-	<a class="link" href={href} aria-label={title}>
+	<a class="link" {href} aria-label={title}>
 		<img class="image" src={post.file_url} alt={title} loading="lazy" />
 		<div class="overlay">
 			<h4 class="title">{title}</h4>
