@@ -5,6 +5,7 @@
 <div class="container">
 	<h1>Gigs</h1>
 	<p>No gigs yet. Check back soon!</p>
+	<h2>FEATURE NOT IMPLEMENTED YET</h2>
 </div>
 
 <style>

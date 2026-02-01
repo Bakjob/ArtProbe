@@ -3,7 +3,12 @@
 	import ProfileHeader from '$lib/components/profile/ProfileHeader.svelte'
 
 	let { data } = $props()
+	$effect(() => {
+		console.log('Profile data:', data)
+	})
 </script>
+
+<div class="background-image"><img src={data.profile?.background_url} alt="Background" /></div>
 
 <div class="profile-page">
 	<div class="header">
@@ -15,6 +20,7 @@
 			age={data.profile?.age}
 			createdAt={data.profile?.created_at}
 			showEditButton={data.canEditProfile}
+			avatarUrl={data.profile?.avatar_url}
 		/>
 	</div>
 
@@ -88,5 +94,24 @@
 		grid-template-rows: repeat(2, auto);
 		gap: 1.5rem;
 		align-items: start;
+	}
+
+	.background-image {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		z-index: -1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.background-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 </style>

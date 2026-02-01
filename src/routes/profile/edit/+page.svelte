@@ -5,12 +5,16 @@
 	let bio = $state('')
 	let age = $state('')
 	let phone = $state('')
+	let avatarPreview = $state(null)
+	let backgroundPreview = $state(null)
 
 	$effect(() => {
 		gender = data.user?.gender || ''
 		bio = data.user?.bio || ''
 		age = data.user?.age || ''
 		phone = data.user?.phone || ''
+		avatarPreview = data.user?.avatar_url || null
+		backgroundPreview = data.user?.background_url || null
 	})
 
 	$effect(() => {
@@ -18,6 +22,28 @@
 			// Show success message
 		}
 	})
+
+	function handleAvatarChange(e) {
+		const file = e.target.files?.[0]
+		if (file) {
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				avatarPreview = e.target?.result
+			}
+			reader.readAsDataURL(file)
+		}
+	}
+
+	function handleBackgroundChange(e) {
+		const file = e.target.files?.[0]
+		if (file) {
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				backgroundPreview = e.target?.result
+			}
+			reader.readAsDataURL(file)
+		}
+	}
 </script>
 
 <div class="profile-container">
@@ -36,7 +62,41 @@
 		<div class="success">Profile updated successfully!</div>
 	{/if}
 
-	<form method="POST" action="?/update">
+	<form method="POST" action="?/update" enctype="multipart/form-data">
+		<div class="image-section">
+			<div class="image-upload">
+				<label for="avatar">Profilbild:</label>
+				{#if avatarPreview}
+					<div class="image-preview">
+						<img src={avatarPreview} alt="Avatar preview" class="avatar-preview" />
+					</div>
+				{/if}
+				<input
+					type="file"
+					id="avatar"
+					name="avatar"
+					accept="image/*"
+					onchange={handleAvatarChange}
+				/>
+			</div>
+
+			<div class="image-upload">
+				<label for="background">Bakgrundsbild:</label>
+				{#if backgroundPreview}
+					<div class="image-preview">
+						<img src={backgroundPreview} alt="Background preview" class="background-preview" />
+					</div>
+				{/if}
+				<input
+					type="file"
+					id="background"
+					name="background"
+					accept="image/*"
+					onchange={handleBackgroundChange}
+				/>
+			</div>
+		</div>
+
 		<label for="age">Age:</label>
 		<input type="number" id="age" name="age" value={age} min="1" max="120" />
 
@@ -143,6 +203,50 @@
 		background-color: #999;
 		cursor: not-allowed;
 	}
+
+	.image-section {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.5rem;
+		margin-bottom: 1.5rem;
+		padding: 1.5rem;
+		background-color: #e9ecef;
+		border-radius: 8px;
+	}
+
+	.image-upload {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.image-preview {
+		margin: 0.5rem 0;
+		border: 2px solid #ccc;
+		border-radius: 8px;
+		overflow: hidden;
+		background-color: #f5f5f5;
+	}
+
+	.avatar-preview {
+		width: 150px;
+		height: 150px;
+		object-fit: cover;
+		display: block;
+		margin: 0 auto;
+	}
+
+	.background-preview {
+		width: 100%;
+		height: 120px;
+		object-fit: cover;
+		display: block;
+	}
+
+	input[type='file'] {
+		padding: 0.5rem;
+		margin-top: 0.5rem;
+	}
+
 	.danger-zone {
 		margin-top: 3rem;
 		padding: 1.5rem;

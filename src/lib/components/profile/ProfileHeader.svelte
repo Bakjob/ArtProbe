@@ -6,7 +6,8 @@
 		gender = undefined,
 		age = undefined,
 		createdAt = undefined,
-		showEditButton = false
+		showEditButton = false,
+		avatarUrl = undefined
 	} = $props()
 
 	function asOptionalString(value) {
@@ -41,11 +42,17 @@
 	let postsCount = $derived(
 		Array.isArray(posts) ? posts.length : Array.isArray(user?.posts) ? user.posts.length : undefined
 	)
+
+	let resolvedAvatarUrl = $derived(avatarUrl ?? user?.avatar_url ?? null)
 </script>
 
 <div class="profile-header">
 	<div class="avatar">
-		{avatarLetter}
+		{#if resolvedAvatarUrl}
+			<img src={resolvedAvatarUrl} alt="{username}'s avatar" />
+		{:else}
+			{avatarLetter}
+		{/if}
 	</div>
 
 	<div class="user-info">
@@ -103,6 +110,15 @@
 		font-size: 3rem;
 		font-weight: bold;
 		flex-shrink: 0;
+		overflow: hidden;
+		border: 3px solid white;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.avatar img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 
 	.user-info h1 {

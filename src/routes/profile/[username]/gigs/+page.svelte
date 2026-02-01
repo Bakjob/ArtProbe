@@ -17,6 +17,7 @@
 
 	{#if (data.gigs?.length || 0) === 0}
 		<p>This user has no gigs listed.</p>
+		<h2>FEATURE NOT IMPLEMENTED YET</h2>
 	{:else}
 		<div class="gigs-grid">
 			{#each data.gigs as gig}

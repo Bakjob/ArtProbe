@@ -18,6 +18,7 @@ CREATE TABLE users (
     gender VARCHAR(20),
     bio TEXT,
     avatar_url TEXT,
+    background_url TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
