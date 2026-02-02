@@ -11,7 +11,7 @@
 	}
 </script>
 
-<button onclick={loggedIn ? logout : login}>
+<button class="nav-button" onclick={loggedIn ? logout : login}>
 	{#if loggedIn}
 		Logout
 	{:else}

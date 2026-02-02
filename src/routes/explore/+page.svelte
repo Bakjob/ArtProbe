@@ -5,12 +5,33 @@
 	let posts = $derived(data.posts)
 	let activeTags = $derived(data.tags || [])
 	let allTags = $derived(data.allTags || [])
+	let searchQuery = $state(data.search || '')
+	let showMature = $state(data.showMature || false)
+
+	// Build URL with current filters
+	function buildUrl(options = {}) {
+		const params = new URLSearchParams()
+		
+		// Tags
+		const tagsToUse = options.tags !== undefined ? options.tags : activeTags
+		tagsToUse.forEach(tag => params.append('tag', tag))
+		
+		// Search
+		const searchToUse = options.search !== undefined ? options.search : searchQuery
+		if (searchToUse) params.set('search', searchToUse)
+		
+		// Mature content
+		const matureToUse = options.mature !== undefined ? options.mature : showMature
+		if (matureToUse) params.set('mature', 'true')
+		
+		const queryString = params.toString()
+		return queryString ? `/explore?${queryString}` : '/explore'
+	}
 
 	// Build URL without a specific tag
 	function removeTagUrl(tagToRemove) {
 		const remaining = activeTags.filter((t) => t !== tagToRemove)
-		if (remaining.length === 0) return '/explore'
-		return '/explore?' + remaining.map((t) => `tag=${encodeURIComponent(t)}`).join('&')
+		return buildUrl({ tags: remaining })
 	}
 
 	// Build URL with an additional tag
@@ -18,12 +39,50 @@
 		const tagLower = tagToAdd.toLowerCase()
 		if (activeTags.includes(tagLower)) return null // Already active
 		const newTags = [...activeTags, tagLower]
-		return '/explore?' + newTags.map((t) => `tag=${encodeURIComponent(t)}`).join('&')
+		return buildUrl({ tags: newTags })
+	}
+
+	// Handle search
+	function handleSearch(event) {
+		event.preventDefault()
+		window.location.href = buildUrl({ search: searchQuery })
+	}
+
+	// Toggle mature content
+	function toggleMature() {
+		window.location.href = buildUrl({ mature: !showMature })
 	}
 </script>
 
 <div class="explore-container">
 	<h1>Explore</h1>
+
+	<div class="search-bar">
+		<form onsubmit={handleSearch}>
+			<input 
+				type="text" 
+				placeholder="Sök på titel eller artist..." 
+				bind:value={searchQuery}
+			/>
+			<button type="submit">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<circle cx="11" cy="11" r="8"></circle>
+					<path d="m21 21-4.35-4.35"></path>
+				</svg>
+			</button>
+		</form>
+		
+		<button class="mature-toggle" class:active={showMature} onclick={toggleMature}>
+			{showMature ? '🔓 Visa allt' : '🔒 Dölj NSFW'}
+		</button>
+	</div>
+
+	{#if data.search}
+		<div class="active-search">
+			Söker efter: <strong>{data.search}</strong>
+			<a href={buildUrl({ search: '' })} class="clear-search">×</a>
+		</div>
+	{/if}
 
 	{#if allTags.length > 0}
 		<div class="popular-tags">
@@ -53,7 +112,7 @@
 					#{tag} <span class="remove-x">×</span>
 				</a>
 			{/each}
-			<a href="/explore" class="clear-btn">Clear all</a>
+			<a href={buildUrl({ tags: [] })} class="clear-btn">Clear all</a>
 		</div>
 	{:else}
 		<p>Discover amazing artworks from our community</p>
@@ -79,8 +138,102 @@
 
 	.explore-container h1 {
 		font-size: 2.5rem;
-		margin-bottom: 0.5rem;
+		margin-bottom: 1rem;
 		color: #333;
+	}
+
+	.search-bar {
+		display: flex;
+		gap: 1rem;
+		margin-bottom: 1.5rem;
+		align-items: stretch;
+	}
+
+	.search-bar form {
+		flex: 1;
+		display: flex;
+		gap: 0.5rem;
+		background: white;
+		border: 2px solid #ddd;
+		border-radius: 12px;
+		padding: 0.5rem;
+		transition: border-color 150ms ease;
+	}
+
+	.search-bar form:focus-within {
+		border-color: #7a5cff;
+	}
+
+	.search-bar input {
+		flex: 1;
+		border: none;
+		outline: none;
+		font-size: 1rem;
+		padding: 0.5rem;
+		background: transparent;
+	}
+
+	.search-bar button[type="submit"] {
+		padding: 0.5rem 1rem;
+		background: linear-gradient(135deg, #7a5cff, #ff914d);
+		color: white;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: opacity 150ms ease;
+	}
+
+	.search-bar button[type="submit"]:hover {
+		opacity: 0.85;
+	}
+
+	.mature-toggle {
+		padding: 0.75rem 1.5rem;
+		background: #f0f0f0;
+		border: 2px solid #ddd;
+		border-radius: 12px;
+		cursor: pointer;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: #555;
+		white-space: nowrap;
+		transition: all 150ms ease;
+	}
+
+	.mature-toggle:hover {
+		background: #e8e8e8;
+	}
+
+	.mature-toggle.active {
+		background: linear-gradient(135deg, #7a5cff, #ff914d);
+		color: white;
+		border-color: transparent;
+	}
+
+	.active-search {
+		background: #f0f0f0;
+		padding: 0.75rem 1rem;
+		border-radius: 8px;
+		margin-bottom: 1rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.clear-search {
+		margin-left: auto;
+		color: #7a5cff;
+		text-decoration: none;
+		font-size: 1.5rem;
+		line-height: 1;
+		padding: 0 0.5rem;
+	}
+
+	.clear-search:hover {
+		opacity: 0.7;
 	}
 
 	.explore-container > p {

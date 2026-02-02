@@ -8,6 +8,12 @@ export async function load({ url }) {
 	// Remove duplicates
 	tags = [...new Set(tags)]
 
+	// Get search query
+	const search = url.searchParams.get('search')?.trim() || ''
+	
+	// Get NSFW filter (default: hide NSFW)
+	const showMature = url.searchParams.get('mature') === 'true'
+
 	try {
 		// Fetch all popular tags sorted by usage
 		const allTagsResult = await pool.query(
@@ -20,15 +26,40 @@ export async function load({ url }) {
 		)
 
 		let result
+		const params = []
+		let paramCount = 1
+		
+		// Build WHERE conditions
+		const conditions = []
+		
+		// NSFW filter
+		if (!showMature) {
+			conditions.push(`(p.mature_content = FALSE OR p.mature_content IS NULL)`)
+		}
+		
+		// Search filter
+		if (search) {
+			conditions.push(`(
+				LOWER(p.title) LIKE $${paramCount} OR 
+				LOWER(u.username) LIKE $${paramCount}
+			)`)
+			params.push(`%${search.toLowerCase()}%`)
+			paramCount++
+		}
 
 		if (tags.length > 0) {
 			// Filter posts that have ALL specified tags (AND logic)
-			const placeholders = tags.map((_, i) => `$${i + 1}`).join(', ')
+			const tagPlaceholders = tags.map((_, i) => `$${paramCount + i}`).join(', ')
+			params.push(...tags, tags.length)
+			
+			const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
+			
 			result = await pool.query(
 				`SELECT 
 					p.post_id,
 					p.title,
 					p.file_url,
+					p.mature_content,
 					COALESCE(l.like_count, 0) AS likes,
 					p.created_at,
 					u.username
@@ -43,20 +74,24 @@ export async function load({ url }) {
 					SELECT pt.post_id
 					FROM post_tags pt
 					JOIN tags t ON pt.tag_id = t.tag_id
-					WHERE LOWER(t.name) IN (${placeholders})
+					WHERE LOWER(t.name) IN (${tagPlaceholders})
 					GROUP BY pt.post_id
-					HAVING COUNT(DISTINCT LOWER(t.name)) = $${tags.length + 1}
+					HAVING COUNT(DISTINCT LOWER(t.name)) = $${paramCount + tags.length}
 				)
+				${conditions.length > 0 ? `AND ${conditions.join(' AND ')}` : ''}
 				ORDER BY l.like_count DESC, p.created_at DESC`,
-				[...tags, tags.length]
+				params
 			)
 		} else {
 			// All recent posts
+			const whereClause = conditions.length > 0 ? `AND ${conditions.join(' AND ')}` : ''
+			
 			result = await pool.query(
 				`SELECT 
 					p.post_id,
 					p.title,
 					p.file_url,
+					p.mature_content,
 					COALESCE(l.like_count, 0) AS likes,
 					p.created_at,
 					u.username
@@ -68,21 +103,27 @@ export async function load({ url }) {
 					GROUP BY post_id
 				) l ON p.post_id = l.post_id
 				WHERE p.created_at >= NOW() - INTERVAL '7 days'
-				ORDER BY l.like_count DESC, p.created_at DESC`
+				${whereClause}
+				ORDER BY l.like_count DESC, p.created_at DESC`,
+				params
 			)
 		}
 
 		return {
 			posts: result.rows,
 			tags: tags.length > 0 ? tags : [],
-			allTags: allTagsResult.rows
+			allTags: allTagsResult.rows,
+			search,
+			showMature
 		}
 	} catch (error) {
 		console.error('Error loading posts:', error)
 		return {
 			posts: [],
 			tags: tags.length > 0 ? tags : [],
-			allTags: []
+			allTags: [],
+			search: '',
+			showMature: false
 		}
 	}
 }

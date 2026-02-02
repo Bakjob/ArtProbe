@@ -47,6 +47,7 @@ export const actions = {
 			const description = formData.get('description')
 			const tagsJson = formData.get('tags')
 			const imageFile = formData.get('image')
+			const mature_content = formData.get('nsfw') === 'true'
 
 			if (!title || !description || !imageFile) {
 				return fail(400, { message: 'Missing required fields' })
@@ -72,10 +73,10 @@ export const actions = {
 
 			// Insert post into database
 			const postResult = await pool.query(
-				`INSERT INTO posts (user_id, file_url, title, created_at)
-			 VALUES ($1, $2, $3, NOW())
+				`INSERT INTO posts (user_id, file_url, title, mature_content, created_at)
+			 VALUES ($1, $2, $3, $4, NOW())
 			 RETURNING post_id`,
-				[userId, fileUrl, title]
+				[userId, fileUrl, title, mature_content]
 			)
 
 			const postId = postResult.rows[0].post_id

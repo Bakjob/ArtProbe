@@ -75,7 +75,7 @@
 	{likes}
 </button>
 
-<style>
+<style scoped>
 	.like-btn {
 		background: none;
 		border: none;

@@ -8,6 +8,7 @@
 	let description = $state('')
 	let tags = $state([])
 	let tagInput = $state('')
+	let nsfw = $state(false)
 	let isSubmitting = $state(false)
 	let errorMessage = $state('')
 	let imageInput
@@ -199,6 +200,17 @@
 				<small class="hint"
 					>Press Space, Comma, or Enter to add a tag. Use ↑↓ to navigate suggestions.</small
 				>
+			</div>
+
+			<div class="form-group">
+				<label for="nsfw">NSFW Content</label>
+				<div class="toggle-wrapper">
+					<label class="toggle-switch">
+						<input type="checkbox" name="nsfw" id="nsfw" bind:checked={nsfw} value="true" />
+						<span class="slider"></span>
+					</label>
+					<span class="toggle-label">{nsfw ? 'Not Safe For Work' : 'Safe For Work'}</span>
+				</div>
 			</div>
 
 			<button type="submit" disabled={isSubmitting} class="submit-btn">
@@ -433,5 +445,67 @@
 		border-left: 4px solid #d32f2f;
 		margin: 0;
 		text-shadow: none;
+	}
+
+	.toggle-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.toggle-switch {
+		position: relative;
+		display: inline-block;
+		width: 52px;
+		height: 28px;
+		cursor: pointer;
+	}
+
+	.toggle-switch input {
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+
+	.slider {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #ccc;
+		transition: 0.3s;
+		border-radius: 28px;
+	}
+
+	.slider:before {
+		position: absolute;
+		content: '';
+		height: 20px;
+		width: 20px;
+		left: 4px;
+		bottom: 4px;
+		background-color: white;
+		transition: 0.3s;
+		border-radius: 50%;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	}
+
+	.toggle-switch input:checked + .slider {
+		background: linear-gradient(90deg, #ff914d, #ff6b35);
+	}
+
+	.toggle-switch input:checked + .slider:before {
+		transform: translateX(24px);
+	}
+
+	.toggle-switch:hover .slider {
+		box-shadow: 0 0 8px rgba(255, 145, 77, 0.3);
+	}
+
+	.toggle-label {
+		font-size: 0.95rem;
+		color: #555;
+		font-weight: 500;
 	}
 </style>
