@@ -35,30 +35,32 @@
 <style>
 	.card {
 		display: grid;
-		grid-template-columns: 44px 1fr;
+		grid-template-rows: auto 1fr; /* stack avatar and info vertically on smaller widths */
+		grid-template-columns: 1fr; /* single column by default for mobile */
 		gap: 0.75rem;
-		align-items: center;
-		padding: 0.85rem;
-		border-radius: 12px;
-		border: 1px solid rgba(0, 0, 0, 0.12);
-		background: rgba(255, 255, 255, 0.75);
+		padding: 1rem 1.25rem;
+		border-radius: 16px;
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		background: rgba(255, 255, 255, 0.85);
 		text-decoration: none;
 		color: inherit;
+		width: 100%;
+		max-width: 220px; /* keeps cards uniform in grids */
 		transition:
-			transform 160ms ease,
-			box-shadow 160ms ease,
-			background 160ms ease;
+			transform 0.18s ease,
+			box-shadow 0.18s ease,
+			background 0.18s ease;
 	}
 
 	.card:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-		background: rgba(255, 255, 255, 0.9);
+		transform: translateY(-3px);
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+		background: rgba(255, 255, 255, 0.95);
 	}
 
 	.avatar {
-		width: 44px;
-		height: 44px;
+		width: 64px;
+		height: 64px;
 		border-radius: 999px;
 		display: grid;
 		place-items: center;
@@ -68,6 +70,7 @@
 		background: linear-gradient(135deg, rgba(122, 92, 255, 0.25), rgba(255, 145, 77, 0.2));
 		border: 1px solid rgba(0, 0, 0, 0.08);
 		overflow: hidden;
+		margin: 0 auto; /* center avatar in card */
 	}
 
 	.avatar-img {
@@ -77,15 +80,33 @@
 		display: block;
 	}
 
+	.info {
+		text-align: center;
+	}
+
 	.name {
-		margin: 0;
-		font-size: 1rem;
+		margin: 0.4rem 0 0.15rem;
+		font-size: 1.1rem;
+		font-weight: 600;
 		line-height: 1.2;
 	}
 
 	.meta {
-		margin: 0.15rem 0 0;
+		margin: 0;
 		font-size: 0.85rem;
 		color: rgba(0, 0, 0, 0.6);
+	}
+
+	/* GRID RESPONSIVENESS: adapt cards in a homepage grid */
+	@media(min-width: 600px) {
+		.card {
+			width: 100%;
+		}
+	}
+
+	@media(min-width: 900px) {
+		.card {
+			width: 100%;
+		}
 	}
 </style>

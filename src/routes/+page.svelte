@@ -25,7 +25,7 @@
 		<h2>Trending Tags</h2>
 
 		<div class="tag-grid">
-			{#each data.trendingTags as tag}
+			{#each data.trendingTags.slice(0,10) as tag}
 				<TagCard {tag} />
 			{/each}
 		</div>
@@ -36,7 +36,7 @@
 		<h2>Trending Posts</h2>
 
 		<div class="trending-grid">
-			{#each data.trendingPosts as post}
+			{#each data.trendingPosts.slice(0,20) as post}
 				<PostCard {post} />
 			{/each}
 		</div>
@@ -44,10 +44,10 @@
 
 	<!-- TRENDING ARTISTS -->
 	<section class="artists-trending">
-		<h2>Trending artists</h2>
+		<h2>Trending Artists</h2>
 
 		<div class="artist-grid">
-			{#each data.trendingArtists as artist}
+			{#each data.trendingArtists.slice(0,20) as artist}
 				<ArtistCard {artist} />
 			{/each}
 		</div>
@@ -69,22 +69,29 @@
 		padding-left: 4rem;
 	}
 
-	.hero h1 {
-		font-size: 3rem;
-		margin: 0;
-	}
+.hero h1 {
+	font-size: 3rem;
+	margin: 0;
+	text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+}
 
-	.tagline {
-		margin-top: 0.5rem;
-		padding: 0.4rem 0.8rem;
-		display: inline-block;
-		border: 2px solid #7a5cff;
-		border-radius: 8px;
-		font-weight: 500;
-		color: #7a5cff;
-		background: rgba(122, 92, 255, 0.2);
-		font-size: 1.5rem;
-	}
+.tagline {
+	margin-top: 0.5rem;
+	padding: 0.4rem 0.8rem;
+	display: inline-block;
+	border-radius: 8px;
+	font-weight: 500;
+	font-size: 1.9rem;
+	color: #f29c1b; /* more orange */
+	text-shadow:
+		-1px -1px 0 #b18406,
+		1px 1px 0 #000; /* black outline for contrast */
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	position: relative;
+	animation: shimmer 5s infinite;
+}
 
 	/* TRENDING TAGS */
 	.tags-trending {
@@ -98,8 +105,10 @@
 
 	.tag-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-		gap: 0.5rem;
+		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* bigger min-width for visibility */
+		gap: 1rem;
+		justify-items: center;
+		overflow: visible; /* allows hover shadow to show */
 	}
 
 	/* TRENDING POSTS */
@@ -113,12 +122,9 @@
 	}
 
 	.trending-grid {
-		display: flex;
-		overflow-x: auto;
-		gap: 0.5rem;
-		padding-bottom: 1rem;
-		scrollbar-width: thin;
-		scrollbar-color: #ccc transparent;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: 1.5rem;
 	}
 
 	/* ARTISTS */
@@ -129,7 +135,8 @@
 
 	.artist-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 		gap: 1.5rem;
 	}
+
 </style>

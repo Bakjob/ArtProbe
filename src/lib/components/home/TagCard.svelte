@@ -22,30 +22,31 @@
 		<div class="overlay">
 			<span class="tag-badge">#{tagName}</span>
 		</div>
+		{#if usageCount}
+			<span class="post-count">{usageCount} {usageCount === 1 ? 'post' : 'posts'}</span>
+		{/if}
 	</div>
-	{#if usageCount}
-		<p class="meta">{usageCount} {usageCount === 1 ? 'post' : 'posts'}</p>
-	{/if}
 </a>
 
 <style>
 	.card {
 		position: relative;
 		display: block;
-		border-radius: 12px;
+		border-radius: 16px;
 		overflow: hidden;
 		text-decoration: none;
 		color: inherit;
-		background: #111;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-		transition:
-			transform 200ms ease,
-			box-shadow 200ms ease;
+		background: #111; /* fallback for edges */
+		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3); /* subtle frame */
+		transition: transform 220ms ease, box-shadow 220ms ease;
+		width: 100%;
+		max-width: 336px;
 	}
 
 	.card:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+		transform: scale(1.08);
+		box-shadow: 0 32px 72px rgba(0, 0, 0, 0.45);
+		z-index: 10;
 	}
 
 	.image-wrapper {
@@ -53,18 +54,20 @@
 		width: 100%;
 		aspect-ratio: 4 / 3;
 		overflow: hidden;
+		border-radius: 16px;
 	}
 
 	.image-wrapper img {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		object-position: center;
 		display: block;
 		transition: transform 300ms ease;
 	}
 
 	.card:hover .image-wrapper img {
-		transform: scale(1.05);
+		transform: scale(1.1) rotateX(1deg);
 	}
 
 	.image-placeholder {
@@ -72,38 +75,60 @@
 		height: 100%;
 		display: grid;
 		place-items: center;
-		background: linear-gradient(135deg, #7a5cff 0%, #ff914d 100%);
+		background: linear-gradient(135deg, #ffb84d 0%, #ff914d 100%);
 	}
 
 	.placeholder-text {
-		font-size: 1.75rem;
+		font-size: 2rem;
 		font-weight: 800;
-		color: rgba(255, 255, 255, 0.9);
-		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+		color: rgba(255, 255, 255, 0.95);
+		text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 	}
 
 	.overlay {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.7) 100%);
+		background: linear-gradient(
+			180deg,
+			rgba(0, 0, 0, 0) 60%,
+			rgba(0, 0, 0, 0.25) 100%
+		); /* subtle fade at bottom */
 		display: flex;
 		align-items: flex-end;
 		padding: 0.75rem;
 	}
 
 	.tag-badge {
-		font-size: 1rem;
-		font-weight: 700;
+		font-size: 1.4rem;
+		font-weight: 800;
 		color: #fff;
-		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+		text-shadow: 
+			-2px -2px 0 #000,
+			2px -2px 0 #000,
+			-2px 2px 0 #000,
+			2px 2px 0 #000,
+			0 0 6px rgba(0,0,0,0.6);
+		transition: text-shadow 220ms ease, transform 220ms ease;
 	}
 
-	.meta {
-		margin: 0;
-		padding: 0.5rem 0.75rem;
-		font-size: 0.8rem;
-		color: #999;
-		background: #1a1a1a;
-		text-align: center;
+	.card:hover .tag-badge {
+		text-shadow: 0 0 2px rgba(0,0,0,0.3);
+		transform: translateY(-10px) scale(1.25);
+	}
+
+	.post-count {
+		position: absolute;
+		bottom: 10px;
+		right: 12px;
+		font-size: 1.2rem;
+		font-weight: 700;
+		color: #fff;
+		text-shadow: 
+			-1px -1px 0 #000,
+			1px -1px 0 #000,
+			-1px 1px 0 #000,
+			1px 1px 0 #000;
+		pointer-events: none; /* doesn’t block clicks */
+		background: none; /* no box */
 	}
 </style>
