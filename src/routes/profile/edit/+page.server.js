@@ -3,7 +3,21 @@ import { redirect } from '@sveltejs/kit'
 import pool from '$lib/server/db.js'
 import { r2 } from '$lib/server/r2.js'
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
+import sharp from 'sharp'
 
+// Bildstorlekar
+const AVATAR_SIZE = { width: 512, height: 512 }
+const BACKGROUND_SIZE = { width: 1920, height: 1080 }
+const IMAGE_QUALITY = 85 // Justera kvaliteten för JPEG-komprimering (1-100)
+
+/**
+ * Loads the current user's profile data for editing.
+ * Loads when visiting /profile/edit
+ *
+ * @param {} param0 - load parameters
+ * @param {object} param0.cookies - cookies object to access session
+ * @returns - user profile data for editing
+ */
 export async function load({ cookies }) {
 	const sessionId = cookies.get('session')
 
@@ -56,74 +70,12 @@ export const actions = {
 
 			// Upload avatar if provided
 			if (avatar && avatar.size > 0) {
-				const avatarBuffer = Buffer.from(await avatar.arrayBuffer())
-				const avatarKey = `avatars/${user.user_id}-${Date.now()}-${avatar.name}`
-
-				await r2.send(
-					new PutObjectCommand({
-						Bucket: 'artprobe-bucket',
-						Key: avatarKey,
-						Body: avatarBuffer,
-						ContentType: avatar.type
-					})
-				)
-
-				avatarUrl = `https://pub-dda74843e5b241c5b5fd0845db919b26.r2.dev/${avatarKey}`
-
-				// Delete old avatar if exists
-				const oldUser = await pool.query('SELECT avatar_url FROM users WHERE user_id = $1', [
-					user.user_id
-				])
-				if (oldUser.rows[0]?.avatar_url) {
-					try {
-						const oldUrl = new URL(oldUser.rows[0].avatar_url)
-						const oldKey = oldUrl.pathname.substring(1)
-						await r2.send(
-							new DeleteObjectCommand({
-								Bucket: 'artprobe-bucket',
-								Key: oldKey
-							})
-						)
-					} catch (deleteError) {
-						console.error('Error deleting old avatar:', deleteError)
-					}
-				}
+				avatarUrl = await uploadAvatar(user.user_id, avatar)
 			}
 
 			// Upload background if provided
 			if (background && background.size > 0) {
-				const backgroundBuffer = Buffer.from(await background.arrayBuffer())
-				const backgroundKey = `backgrounds/${user.user_id}-${Date.now()}-${background.name}`
-
-				await r2.send(
-					new PutObjectCommand({
-						Bucket: 'artprobe-bucket',
-						Key: backgroundKey,
-						Body: backgroundBuffer,
-						ContentType: background.type
-					})
-				)
-
-				backgroundUrl = `https://pub-dda74843e5b241c5b5fd0845db919b26.r2.dev/${backgroundKey}`
-
-				// Delete old background if exists
-				const oldUser = await pool.query('SELECT background_url FROM users WHERE user_id = $1', [
-					user.user_id
-				])
-				if (oldUser.rows[0]?.background_url) {
-					try {
-						const oldUrl = new URL(oldUser.rows[0].background_url)
-						const oldKey = oldUrl.pathname.substring(1)
-						await r2.send(
-							new DeleteObjectCommand({
-								Bucket: 'artprobe-bucket',
-								Key: oldKey
-							})
-						)
-					} catch (deleteError) {
-						console.error('Error deleting old background:', deleteError)
-					}
-				}
+				backgroundUrl = await uploadBackground(user.user_id, background)
 			}
 
 			// Build dynamic SQL query
@@ -263,4 +215,118 @@ export const actions = {
 			return { success: false, error: 'Failed to delete profile' }
 		}
 	}
+}
+
+/**
+ * Bearbetar avatar-bild genom att krympa den om den är större än max-storlek
+ *
+ * @param {Buffer} imageBuffer - Råbildbufferten från uppladdningen
+ * @returns {Promise<Buffer>} - Processad bildbuffer
+ */
+async function processAvatarImage(imageBuffer) {
+	return await sharp(imageBuffer)
+		.resize(AVATAR_SIZE.width, AVATAR_SIZE.height, {
+			fit: 'inside',
+			withoutEnlargement: true
+		})
+		.jpeg({ quality: IMAGE_QUALITY })
+		.toBuffer()
+}
+
+/**
+ * Bearbetar bakgrundsbild genom att krympa den om den är större än max-storlek
+ *
+ * @param {Buffer} imageBuffer - Råbildbufferten från uppladdningen
+ * @returns {Promise<Buffer>} - Processad bildbuffer
+ */
+async function processBackgroundImage(imageBuffer) {
+	return await sharp(imageBuffer)
+		.resize(BACKGROUND_SIZE.width, BACKGROUND_SIZE.height, {
+			fit: 'inside',
+			withoutEnlargement: true
+		})
+		.jpeg({ quality: IMAGE_QUALITY })
+		.toBuffer()
+}
+
+/**
+ * Laddar upp en ny avatar och raderar den gamla
+ *
+ * @param {number} userId - Användarens ID
+ * @param {File} avatarFile - Avatar-filen som ska laddas upp
+ * @returns {Promise<string>} - URL till den nya avataren
+ */
+async function uploadAvatar(userId, avatarFile) {
+	// Delete old avatar before uploading new one
+	const oldUser = await pool.query('SELECT avatar_url FROM users WHERE user_id = $1', [userId])
+	if (oldUser.rows[0]?.avatar_url) {
+		try {
+			const oldUrl = new URL(oldUser.rows[0].avatar_url)
+			const oldKey = oldUrl.pathname.substring(1)
+			await r2.send(
+				new DeleteObjectCommand({
+					Bucket: 'artprobe-bucket',
+					Key: oldKey
+				})
+			)
+		} catch (deleteError) {
+			console.error('Error deleting old avatar:', deleteError)
+		}
+	}
+
+	const avatarBuffer = Buffer.from(await avatarFile.arrayBuffer())
+	const processedAvatar = await processAvatarImage(avatarBuffer)
+	const avatarKey = `avatars/${userId}-${Date.now()}.jpg`
+
+	await r2.send(
+		new PutObjectCommand({
+			Bucket: 'artprobe-bucket',
+			Key: avatarKey,
+			Body: processedAvatar,
+			ContentType: 'image/jpeg'
+		})
+	)
+
+	return `https://pub-dda74843e5b241c5b5fd0845db919b26.r2.dev/${avatarKey}`
+}
+
+/**
+ * Laddar upp en ny bakgrundsbild och raderar den gamla
+ *
+ * @param {number} userId - Användarens ID
+ * @param {File} backgroundFile - Bakgrundsbilden som ska laddas upp
+ * @returns {Promise<string>} - URL till den nya bakgrundsbilden
+ */
+async function uploadBackground(userId, backgroundFile) {
+	// Delete old background before uploading new one
+	const oldUser = await pool.query('SELECT background_url FROM users WHERE user_id = $1', [userId])
+	if (oldUser.rows[0]?.background_url) {
+		try {
+			const oldUrl = new URL(oldUser.rows[0].background_url)
+			const oldKey = oldUrl.pathname.substring(1)
+			await r2.send(
+				new DeleteObjectCommand({
+					Bucket: 'artprobe-bucket',
+					Key: oldKey
+				})
+			)
+		} catch (deleteError) {
+			console.error('Error deleting old background:', deleteError)
+		}
+	}
+
+	const backgroundBuffer = Buffer.from(await backgroundFile.arrayBuffer())
+	const processedBackground = await processBackgroundImage(backgroundBuffer)
+	const backgroundKey = `backgrounds/${userId}-${Date.now()}.jpg`
+
+	await r2.send(
+		new PutObjectCommand({
+			Bucket: 'artprobe-bucket',
+			Key: backgroundKey,
+			Body: processedBackground,
+			ContentType: 'image/jpeg'
+		})
+	)
+
+	return `https://pub-dda74843e5b241c5b5fd0845db919b26.r2.dev/${backgroundKey}`
 }

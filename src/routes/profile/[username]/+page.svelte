@@ -29,47 +29,47 @@
 	{/if}
 
 	<div class="cards-grid">
-		<InfoCard
+		<!-- 		<InfoCard
 			color="#f9f9f9"
 			text="gigs"
 			href={`/profile/${data.profile.username}/gigs`}
 			symbol="/placeholder.png"
 			onError={(e) => console.log('InfoCard error', e)}
-		/>
-		<InfoCard
+		/> -->
+		<!-- 		<InfoCard
 			color="#f9f9f9"
 			text="orders"
 			href={`/profile/${data.profile.username}/orders`}
 			symbol="/placeholder.png"
 			onError={(e) => console.log('InfoCard error', e)}
-		/>
-		<InfoCard
+		/> -->
+		<!-- 		<InfoCard
 			color="#f9f9f9"
 			text="reviews"
 			href={`/profile/${data.profile.username}/reviews`}
 			symbol="/placeholder.png"
 			onError={(e) => console.log('InfoCard error', e)}
-		/>
-		<InfoCard
+		/> -->
+		<!-- <InfoCard
 			color="#f9f9f9"
 			text="wallet"
 			href={`/profile/${data.profile.username}/wallet`}
 			symbol="/placeholder.png"
 			onError={(e) => console.log('InfoCard error', e)}
-		/>
-		<InfoCard
+		/> -->
+		<!-- 		<InfoCard
 			color="#f9f9f9"
 			text="stats"
 			href={`/profile/${data.profile.username}/stats`}
 			symbol="/placeholder.png"
 			onError={(e) => console.log('InfoCard error', e)}
-		/>
+		/> -->
 		<InfoCard
 			color="#f9f9f9"
 			text="badges"
 			href={`/profile/${data.profile.username}/badges`}
 			symbol="/placeholder.png"
-			onError={(e) => console.log('ProfileCard error', e)}
+			onError={(e) => console.log('InfoCard error', e)}
 		/>
 	</div>
 </div>

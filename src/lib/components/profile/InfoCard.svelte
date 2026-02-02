@@ -144,21 +144,42 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		gap: 0.5rem;
-		padding: 1rem;
-		border-radius: 0;
-		border: 1px solid #ddd;
+		gap: 1rem;
+		padding: 2rem 1.5rem;
+		border-radius: 12px;
+		border: none;
 		background: var(--card-bg, white);
-		width: 160px;
+		width: 100%;
 		aspect-ratio: 1 / 1;
 		cursor: pointer;
 		text-decoration: none;
 		color: inherit;
 		user-select: none;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+		transition: all 0.3s ease;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.profile-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+		transform: scaleX(0);
+		transition: transform 0.3s ease;
 	}
 
 	.profile-card:hover {
-		filter: brightness(0.98);
+		transform: translateY(-4px);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+	}
+
+	.profile-card:hover::before {
+		transform: scaleX(1);
 	}
 
 	.profile-card:focus-visible {
@@ -167,18 +188,36 @@
 	}
 
 	.symbol {
-		font-size: 1.2rem;
+		font-size: 2.5rem;
 		line-height: 1;
+		filter: grayscale(0.3);
+		transition: filter 0.3s ease;
+	}
+
+	.profile-card:hover .symbol {
+		filter: grayscale(0);
 	}
 
 	.symbol-img {
-		width: 22px;
-		height: 22px;
-		object-fit: contain;
+		width: 90%;
+		height: 90%;
+		object-fit: cover;
+		border-radius: 8px;
+		opacity: 0.7;
+		transition: all 0.3s ease;
+	}
+
+	.profile-card:hover .symbol-img {
+		opacity: 1;
+		transform: scale(1.05);
 	}
 
 	.text {
 		color: #333;
 		text-align: center;
+		font-size: 1.1rem;
+		font-weight: 600;
+		text-transform: capitalize;
+		letter-spacing: 0.5px;
 	}
 </style>
