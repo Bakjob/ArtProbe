@@ -205,7 +205,7 @@
 				{#if isSubmitting}
 					⏳ Creating...
 				{:else}
-					✨ Create Post
+					Create Post
 				{/if}
 			</button>
 
@@ -228,15 +228,6 @@
 		border-radius: 16px;
 		padding: 2.5rem;
 		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-	}
-
-	h1 {
-		margin: 0 0 0.5rem 0;
-		font-size: 2rem;
-		background: linear-gradient(90deg, #ffde59, #ff914d);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
 	}
 
 	.subtitle {

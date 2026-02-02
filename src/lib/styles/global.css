@@ -1,67 +1,179 @@
+/* ======================
+   RESET
+====================== */
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+/* ======================
+   COLOR SYSTEM
+====================== */
+:root {
+  --grad-start: #ffe27a;
+  --grad-end: #ff9f5a;
+
+  --bg-main: #fff6ee;
+  --surface: rgba(255, 255, 255, 0.88);
+
+  --text-main: #1f1f1f;
+  --text-muted: #5f5f5f;
+
+  --accent: #ff8a3d;
+}
+
+/* ======================
+   BODY
+====================== */
 body {
-	font-family: 'Montserrat', sans-serif;
-	line-height: 1.6;
-	color: #000;
-	text-shadow: 1px 1px 5px #ff914d;
-	background: linear-gradient(90deg, #ffde59, #ff914d);
-	min-height: 100vh;
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  color: var(--text-main);
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255, 255, 255, 0.6),
+      transparent 60%
+    ),
+    linear-gradient(
+      135deg,
+      var(--grad-start),
+      var(--grad-end)
+    );
+  min-height: 100vh;
 }
 
-/* Buttons */
+/* ======================
+   HEADINGS — GOLD TEXT WITH PROPORTIONAL BLACK OUTLINE
+====================== */
+
+/* Normal headings (h2, h3, etc.) */
+h2 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: 1.8rem;
+
+  color: #ffb85c;
+
+  /* thin outline for smaller text */
+  text-shadow:
+    -0.8px -0.8px 0 #000,
+     0.8px -0.8px 0 #000,
+    -0.8px  0.8px 0 #000,
+     0.8px  0.8px 0 #000;
+}
+
+h3 {
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 1.4rem;
+  text-shadow:
+    -0.6px -0.6px 0 #000,
+     0.6px -0.6px 0 #000,
+    -0.6px  0.6px 0 #000,
+     0.6px  0.6px 0 #000;
+}
+
+/* Hero headline (h1) */
+h1 {
+  font-weight: 700;
+  font-size: 3rem;
+  letter-spacing: -0.02em;
+  color: #ffb85c;
+
+  /* thicker outline for large text */
+  text-shadow:
+    -2px -2px 0 #000,
+     2px -2px 0 #000,
+    -2px  2px 0 #000,
+     2px  2px 0 #000;
+}
+
+/* Hero section override (optional for extra pop) */
+.hero h1 {
+  font-size: 4rem;
+  text-shadow:
+    -2.5px -2.5px 0 #000,
+     2.5px -2.5px 0 #000,
+    -2.5px  2.5px 0 #000,
+     2.5px  2.5px 0 #000;
+}
+
+p {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* ======================
+   BUTTONS
+====================== */
 button {
-	cursor: pointer;
-	font-size: 1rem;
-	padding: 0.6rem 1.2rem;
-	border: none;
-	border-radius: 8px;
-	background: linear-gradient(90deg, #ffde59, #ff914d);
-	color: #333;
-	font-weight: bold;
-	transition:
-		transform 0.2s,
-		box-shadow 0.2s;
-}
-
-button:hover {
-	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-button:active {
-	transform: translateY(0);
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      135deg,
+      var(--grad-start),
+      var(--grad-end)
+    );
+  color: #2a2a2a;
+  font-weight: 600;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 button:hover:enabled {
-	color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+button:active:enabled {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.18);
 }
 
 button:disabled {
-	background-color: #999;
-	cursor: not-allowed;
+  background: #e0e0e0;
+  color: #999;
+  box-shadow: none;
+  cursor: not-allowed;
 }
 
-/* Links in body */
+/* ======================
+   LINKS
+====================== */
 a {
-	color: #ff914d;
-	text-decoration: none;
-	transition: color 0.2s;
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
 }
 
 a:hover {
-	color: #ffde59;
+  text-decoration: underline;
 }
 
+/* ======================
+   CARDS
+====================== */
 .card {
-	background: rgba(255, 255, 255, 0.8);
-	border-radius: 12px;
-	padding: 1.5rem;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	transition: box-shadow 0.2s;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 1.75rem;
+  backdrop-filter: blur(8px);
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.14);
 }

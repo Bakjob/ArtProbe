@@ -44,7 +44,7 @@
 
 	<!-- TRENDING ARTISTS -->
 	<section class="artists-trending">
-		<h2>Artist Highlights</h2>
+		<h2>Trending artists</h2>
 
 		<div class="artist-grid">
 			{#each data.trendingArtists as artist}
