@@ -5,8 +5,8 @@
 	let posts = $derived(data.posts)
 	let activeTags = $derived(data.tags || [])
 	let allTags = $derived(data.allTags || [])
-	let searchQuery = $state(data.search || '')
-	let showMature = $state(data.showMature || false)
+	let searchQuery = $derived(data.search || '')
+	let showMature = $derived(data.showMature || false)
 
 	// Build URL with current filters
 	function buildUrl(options = {}) {
@@ -64,7 +64,7 @@
 				placeholder="Sök på titel eller artist..." 
 				bind:value={searchQuery}
 			/>
-			<button type="submit">
+			<button type="submit" aria-label="Search">
 				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<circle cx="11" cy="11" r="8"></circle>
 					<path d="m21 21-4.35-4.35"></path>
