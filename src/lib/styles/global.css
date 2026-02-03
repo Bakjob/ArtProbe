@@ -196,10 +196,10 @@ a:hover {
 .card {
   background: var(--surface);
   border-radius: 16px;
-  padding: 1.75rem;
+  padding: 1.15rem;
   backdrop-filter: blur(8px);
   box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.1);
+    0 12px 30px rgba(54, 23, 2, 0.164);
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease;

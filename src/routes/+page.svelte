@@ -85,12 +85,12 @@
 	color: #f29c1b; /* more orange */
 	text-shadow:
 		-1px -1px 0 #b18406,
-		1px 1px 0 #000; /* black outline for contrast */
+		1px 1px 0 #0000008c; /* black outline for contrast */
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 	position: relative;
-	animation: shimmer 5s infinite;
+	
 }
 
 	/* TRENDING TAGS */
@@ -99,17 +99,18 @@
 		text-align: center;
 	}
 
-	.tags-trending h2 {
-		margin-bottom: 2rem;
-	}
+	.tags-trending {
+	perspective: 1200px;
+}
 
 	.tag-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* bigger min-width for visibility */
-		gap: 1rem;
-		justify-items: center;
-		overflow: visible; /* allows hover shadow to show */
-	}
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 2.5rem;              /* 🔥 this matters */
+	justify-items: center;
+	padding: 1.1rem 0;        /* 🔥 vertical breathing room */
+	overflow: hidden;
+}
 
 	/* TRENDING POSTS */
 	.posts-trending {
