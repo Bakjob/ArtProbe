@@ -89,11 +89,11 @@
 	.like {
 		position: absolute;
 		top: 0.35rem;
-		right: 0.35rem;
-		z-index: 2;
+		right: 0.325rem;
+		z-index: 10;
 		background: rgba(255, 255, 255, 0.9);
-		border-radius: 999px;
+		border-radius: 10rem;
 		padding: 0.25rem 0.35rem;
-		backdrop-filter: blur(6px);
+		backdrop-filter: blur(1px);
 	}
 </style>

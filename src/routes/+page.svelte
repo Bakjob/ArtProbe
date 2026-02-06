@@ -57,7 +57,7 @@
 <style scoped>
 	/* HERO */
 	.hero {
-		height: 70vh;
+		height: 60vh;
 		background-image: url('Commander.png');
 		background-size: cover;
 		background-position: center;
@@ -70,9 +70,9 @@
 	}
 
 .hero h1 {
-	font-size: 3rem;
+	font-size: 3.5rem;
 	margin: 0;
-	text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+	text-shadow: 4px 6px 8px rgb(0, 0, 0);
 }
 
 .tagline {
@@ -81,11 +81,11 @@
 	display: inline-block;
 	border-radius: 8px;
 	font-weight: 500;
-	font-size: 1.9rem;
-	color: #f29c1b; /* more orange */
+	font-size: 2.9rem;
+	color: #f29c1bbb; /* more orange */
 	text-shadow:
-		-1px -1px 0 #b18406,
-		1px 1px 0 #0000008c; /* black outline for contrast */
+		-1px -1px 0 #ec9422,
+		2px 1px 0 #000000; /* black outline for contrast */
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
@@ -142,6 +142,7 @@
 		grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 		gap: 1.0rem;
 		justify-items: center;
+		
 	}
 
 </style>

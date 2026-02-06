@@ -20,7 +20,7 @@ export async function load({ params, cookies }) {
 	try {
 		// Fetch user by username, plus profile fields used on the page
 		const userResult = await pool.query(
-			'SELECT user_id, username, age, gender, bio, created_at, avatar_url, background_url FROM users WHERE username = $1',
+			'SELECT user_id, username, age, gender, bio, created_at, avatar_url FROM users WHERE username = $1',
 			[username]
 		)
 		if (userResult.rows.length === 0) {
