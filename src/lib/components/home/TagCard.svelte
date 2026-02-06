@@ -35,49 +35,59 @@
 </a>
 
 <style scoped>
+/* CARD — outer shell only */
 .card {
 	display: block;
+	width: 90%;
+	max-width: 276px;
 	text-decoration: none;
 	color: inherit;
-	width: 100%;
-	max-width: 336px;
-	border-radius: 70px;
-	overflow: hidden; /* clips everything */
-	background: #0c0c0c; /* fills edges */
-	transition: transform 2620ms ease, box-shadow 10ms ease;
+
+	background:  #000000ef;
+	transition: transform 260ms ease, box-shadow 260ms ease;
 }
 
 .card:hover {
-	transform: translateY(-6px) scale(1.08);
-	box-shadow: 0 2px 6px rgba(29, 29, 29, 0.61);
+	transform: translateY(-4px) scale(1.05);
+	box-shadow: 0 10px 28px rgb(0, 0, 0);
 	z-index: 10;
 }
 
+/* IMAGE WRAPPER — THIS DEFINES THE SHAPE */
 .image-wrapper {
 	position: relative;
 	width: 100%;
 	aspect-ratio: 7 / 2;
-		
+
+	border-radius: 32px;      /* 🔥 actual rounding */
+	overflow: hidden;         /* 🔥 hard clip */
 }
 
+/* IMAGE — MATCH THE SHAPE */
 .image-wrapper img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
 	object-position: center;
 	display: block;
-	transition: transform 4330ms cubic-bezier(.2,.8,.2,1);
+
+	border-radius: 32px;      /* 🔥 same radius as wrapper */
+	transform: scale(1.02);
+	transition: transform 360ms cubic-bezier(.2,.8,.2,1);
 }
 
 .card:hover .image-wrapper img {
-	transform: scale(1.08);
+	transform: scale(1.06);
 }
 
+/* PLACEHOLDER — ALSO ROUNDED */
 .image-placeholder {
 	width: 100%;
 	height: 100%;
 	display: grid;
 	place-items: center;
+
+	border-radius: 32px;
 	background: linear-gradient(135deg, #ffb84d 0%, #ff914d 100%);
 }
 
@@ -88,12 +98,13 @@
 	text-shadow: 0 2px 6px rgba(0,0,0,0.6);
 }
 
+/* OVERLAY TEXT */
 .overlay {
 	position: absolute;
 	inset: 0;
 	display: flex;
 	align-items: flex-end;
-	padding: 0.2rem;
+	padding: 0.6rem;
 	pointer-events: none;
 }
 
@@ -106,26 +117,29 @@
 		1px -1px 0 #000,
 		-1px 1px 0 #000,
 		1px 1px 0 #000;
-	transition: transform 240ms ease, text-shadow 240ms ease;
+	transition: transform 240ms ease;
 }
 
 .card:hover .tag-badge {
 	transform: translateY(-4px) scale(1.05);
-	text-shadow: 0 0 4px rgba(0,0,0,0.4);
 }
 
+/* POST COUNT */
 .post-count {
 	position: absolute;
 	bottom: 10px;
 	right: 12px;
+
 	font-size: 1.2rem;
 	font-weight: 700;
 	color: #fff;
+
 	text-shadow:
 		-1px -1px 0 #000,
 		1px -1px 0 #000,
 		-1px 1px 0 #000,
 		1px 1px 0 #000;
+
 	pointer-events: none;
 }
 </style>

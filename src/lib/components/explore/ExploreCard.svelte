@@ -1,84 +1,107 @@
 <script>
-	import LikeButton from '$lib/components/LikeButton.svelte'
-
-	let { post, user } = $props()
+  import LikeButton from '$lib/components/LikeButton.svelte'
+  export let post
+  export let user
 </script>
 
-<div class="post-card">
-	<a href="/posts/{post.post_id}" class="post-link">
-		<div class="image-container">
-			<img src={post.file_url} alt={post.title || 'Artwork'} />
-		</div>
-		<div class="card-content">
-			<h3>{post.title || 'Untitled'}</h3>
-			<div class="card-footer">
-				<span class="author">by {post.username}</span>
-			</div>
-		</div>
-	</a>
-	<LikeButton {post} {user} />
+<div class="image-card-main">
+  <a href="/posts/{post.post_id}" class="post-link">
+    <div class="image-container">
+      <img src={post.file_url} alt={post.title || 'Artwork'} />
+
+      <!-- Info overlay -->
+      <div class="image-card-info">
+        <h2>{post.title || 'Untitled'}</h2>
+        <span class="author">by {post.username}</span>
+      </div>
+    </div>
+  </a>
+
+  <LikeButton {post} {user} class="like-btn"/>
 </div>
 
-<style>
-	.post-card {
-		background: white;
-		border-radius: 12px;
-		overflow: hidden;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-		transition:
-			transform 0.2s,
-			box-shadow 0.2s;
-		position: relative;
-	}
+<style scoped>
+/* Square card */
+.image-card-main {
+  position: relative;
+  width: 28rem;
+  aspect-ratio: 1 / 1; /* Makes height equal width */
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
 
-	.post-card:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-	}
+.image-card-main:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
 
-	.post-link {
-		text-decoration: none;
-		color: inherit;
-		display: block;
-	}
+.post-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
 
-	.image-container {
-		width: 100%;
-		height: 280px;
-		overflow: hidden;
-		background: #f5f5f5;
-	}
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
-	.image-container img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
 
-	.card-content {
-		padding: 1rem;
-	}
+.image-card-main:hover img {
+  transform: scale(1.05);
+}
 
-	.card-content h3 {
-		margin: 0 0 0.75rem 0;
-		font-size: 1.2rem;
-		color: #333;
-	}
+/* Info overlay */
+.image-card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  /* Remove background if you want fully transparent until hover */
+  background: transparent;
+  /* Remove local color so it uses global CSS */
+  color: inherit;
+  opacity: 0;
+  transition: opacity 0.4s, transform 0.4s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
 
-	.card-footer {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		font-size: 0.9rem;
-	}
+.image-card-main:hover .image-card-info {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-	.author {
-		color: #666;
-	}
+.image-card-info .author {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
 
-	.post-card > :global(.like-btn) {
-		position: absolute;
-		bottom: 1rem;
-		right: 1rem;
-	}
+/* Like button */
+:global(.like-btn) {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 10; /* Make sure it's above overlay */
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.image-card-main:hover :global(.like-btn) {
+  opacity: 1;
+}
 </style>

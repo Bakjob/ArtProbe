@@ -73,7 +73,7 @@
 		</form>
 		
 		<button class="mature-toggle" class:active={showMature} onclick={toggleMature}>
-			{showMature ? '🔓 Visa allt' : '🔒 Dölj NSFW'}
+			{showMature ? '🔓 Show all' : '🔒 Hide NSFW'}
 		</button>
 	</div>
 
@@ -139,7 +139,6 @@
 	.explore-container h1 {
 		font-size: 2.5rem;
 		margin-bottom: 1rem;
-		color: #333;
 	}
 
 	.search-bar {
@@ -242,11 +241,12 @@
 	}
 
 	.card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-		gap: 2rem;
-		margin-top: 2rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+	gap: 2.5rem;   /* smaller uniform gaps */
+	margin-top: 2rem;
 	}
+
 	.no-posts {
 		text-align: center;
 		color: #666;

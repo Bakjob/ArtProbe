@@ -95,22 +95,25 @@
 
 	/* TRENDING TAGS */
 	.tags-trending {
-		padding: 2rem 3rem;
+		padding: 2rem 0.1rem;
 		text-align: center;
 	}
 
 	.tags-trending {
-	perspective: 1200px;
+	perspective:1200px;
 }
 
-	.tag-grid {
+.tag-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-	gap: 2.5rem;              /* 🔥 this matters */
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 12px 18px;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 1rem 0;
 	justify-items: center;
-	padding: 1.1rem 0;        /* 🔥 vertical breathing room */
-	overflow: hidden;
 }
+
+
 
 	/* TRENDING POSTS */
 	.posts-trending {
@@ -130,14 +133,15 @@
 
 	/* ARTISTS */
 	.artists-trending {
-		padding: 2rem 3rem;
+		padding: 2rem 4rem;
 		text-align: center;
 	}
 
 	.artist-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-		gap: 1.5rem;
+		gap: 1.0rem;
+		justify-items: center;
 	}
 
 </style>
