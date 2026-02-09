@@ -25,7 +25,7 @@ export async function load() {
 			JOIN tags t ON pt.tag_id = t.tag_id
 			GROUP BY t.tag_id, t.name
 			ORDER BY usage_count DESC
-			LIMIT 6`
+			LIMIT 8`
 		)
 
 		// Hämta trending posts: högst likes, begränsa till 10

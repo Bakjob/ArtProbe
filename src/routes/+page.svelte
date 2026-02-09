@@ -58,7 +58,7 @@
 	/* HERO */
 	.hero {
 		height: 60vh;
-		background-image: url('Commander.png');
+		background-image: url('/Commander.png');
 		background-size: cover;
 		background-position: center;
 		display: flex;
