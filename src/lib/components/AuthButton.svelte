@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { language, t } from '$lib/i18n'
+
 	let { loggedIn }: { loggedIn: boolean } = $props()
 
 	async function logout() {
@@ -13,9 +15,9 @@
 
 <button class="nav-button" onclick={loggedIn ? logout : login}>
 	{#if loggedIn}
-		Logout
+		{t($language, 'logout')}
 	{:else}
-		Log in
+		{t($language, 'login')}
 	{/if}
 </button>
 

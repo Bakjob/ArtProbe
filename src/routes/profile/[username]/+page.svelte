@@ -1,6 +1,7 @@
 <script>
 	import InfoCard from '$lib/components/profile/InfoCard.svelte'
 	import ProfileHeader from '$lib/components/profile/ProfileHeader.svelte'
+	import { language, t } from '$lib/i18n'
 
 	let { data } = $props()
 	$effect(() => {
@@ -24,9 +25,9 @@
 		/>
 	</div>
 
-	{#if data.canEditProfile}
-		<!-- Lägg ägar-specifika saker här -->
-	{/if}
+{#if data.canEditProfile}
+	<!-- Add owner-only content here -->
+{/if}
 
 	<div class="cards-grid">
 		<!-- 		<InfoCard
@@ -66,7 +67,7 @@
 		/> -->
 		<InfoCard
 			color="#f9f9f9"
-			text="badges"
+			text={t($language, 'badges')}
 			href={`/profile/${data.profile.username}/badges`}
 			symbol="/placeholder.png"
 			onError={(e) => console.log('InfoCard error', e)}

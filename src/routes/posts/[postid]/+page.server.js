@@ -4,7 +4,7 @@ export async function load({ params }) {
 	const { postid } = params
 
 	try {
-		// Hämta posten med användarinfo
+		// Fetch the post with user info
 		const postResult = await pool.query(
 			`SELECT 
 				p.post_id,
@@ -26,14 +26,13 @@ export async function load({ params }) {
 
 		if (postResult.rows.length === 0) {
 			return {
-				status: 404,
-				error: 'Post not found'
+				removed: true
 			}
 		}
 
 		const post = postResult.rows[0]
 
-		// Hämta alla tags för posten
+		// Fetch all tags for the post
 		const tagsResult = await pool.query(
 			`SELECT t.name
 			FROM tags t
@@ -51,7 +50,6 @@ export async function load({ params }) {
 	} catch (error) {
 		console.error('Error loading post:', error)
 		return {
-			status: 500,
 			error: 'Failed to load post'
 		}
 	}

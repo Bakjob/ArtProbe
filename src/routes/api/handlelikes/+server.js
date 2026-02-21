@@ -2,24 +2,24 @@ import { json } from '@sveltejs/kit'
 import pool from '$lib/server/db.js'
 import { getUserBySession } from '$lib/server/auth.js'
 
-// Funktion för att toggle like (lägg till eller ta bort)
+// Toggle a like (add or remove)
 async function toggleLike(userId, postId) {
 	try {
-		// Kolla om användaren redan har likat
+		// Check if the user already liked
 		const existingLike = await pool.query(
 			'SELECT * FROM post_likes WHERE user_id = $1 AND post_id = $2',
 			[userId, postId]
 		)
 
 		if (existingLike.rows.length > 0) {
-			// Ta bort like
+			// Remove like
 			await pool.query('DELETE FROM post_likes WHERE user_id = $1 AND post_id = $2', [
 				userId,
 				postId
 			])
 			return { liked: false }
 		} else {
-			// Lägg till like
+			// Add like
 			await pool.query('INSERT INTO post_likes (user_id, post_id) VALUES ($1, $2)', [
 				userId,
 				postId
@@ -32,7 +32,7 @@ async function toggleLike(userId, postId) {
 	}
 }
 
-// Funktion för att hämta likes-status för en användare och post
+// Get like status for a user and post
 async function getLikeStatus(userId, postId) {
 	try {
 		const result = await pool.query(
@@ -46,7 +46,7 @@ async function getLikeStatus(userId, postId) {
 	}
 }
 
-// Hantera POST-förfrågningar för att toggle like
+// Handle POST requests for toggling likes
 export async function POST({ request, cookies }) {
 	const sessionId = cookies.get('session')
 	console.log('Session ID:', sessionId)
@@ -64,7 +64,7 @@ export async function POST({ request, cookies }) {
 	try {
 		const result = await toggleLike(userId, postId)
 		console.log('Toggle result:', result)
-		// updatePostLikes(postId); // Inte behövs längre
+		// updatePostLikes(postId); // No longer needed
 		return json({ liked: result.liked })
 	} catch (error) {
 		console.error('Error in handlelikes endpoint:', error)
@@ -72,7 +72,7 @@ export async function POST({ request, cookies }) {
 	}
 }
 
-// Hantera GET-förfrågningar för att hämta likes-status
+// Handle GET requests for like status
 export async function GET({ url, cookies }) {
 	const sessionId = cookies.get('session')
 	const user = sessionId ? await getUserBySession(sessionId) : null

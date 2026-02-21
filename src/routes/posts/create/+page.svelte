@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation'
 	import { enhance } from '$app/forms'
+	import { language, t } from '$lib/i18n'
 
 	let { data } = $props()
 
@@ -93,8 +94,8 @@
 
 <div class="container">
 	<div class="card">
-		<h1>🎨 Create New Post</h1>
-		<p class="subtitle">Share your artwork with the community</p>
+		<h1>{t($language, 'createNewPostTitle')}</h1>
+		<p class="subtitle">{t($language, 'createNewPostSubtitle')}</p>
 
 		<form
 			method="POST"
@@ -107,14 +108,14 @@
 					if (result.type === 'redirect') {
 						goto(result.location)
 					} else if (result.type === 'failure') {
-						errorMessage = result.data?.message || 'Failed to create post'
+						errorMessage = result.data?.message || t($language, 'failedCreatePost')
 					}
 					await update()
 				}
 			}}
 		>
 			<div class="form-group">
-				<label for="image">Upload Image</label>
+				<label for="image">{t($language, 'uploadImage')}</label>
 				<input
 					type="file"
 					id="image"
@@ -126,24 +127,24 @@
 			</div>
 
 			<div class="form-group">
-				<label for="title">Title</label>
+				<label for="title">{t($language, 'titleLabel')}</label>
 				<input
 					type="text"
 					id="title"
 					name="title"
 					bind:value={title}
-					placeholder="Enter a catchy title..."
+					placeholder={t($language, 'titlePlaceholder')}
 					required
 				/>
 			</div>
 
 			<div class="form-group">
-				<label for="description">Description</label>
+				<label for="description">{t($language, 'descriptionLabel')}</label>
 				<textarea
 					id="description"
 					name="description"
 					bind:value={description}
-					placeholder="Tell us about your artwork..."
+					placeholder={t($language, 'descriptionPlaceholder')}
 					required
 				></textarea>
 			</div>
@@ -152,7 +153,7 @@
 			<input type="hidden" name="tags" value={JSON.stringify(tags)} />
 
 			<div class="form-group">
-				<label for="tags">Tags</label>
+				<label for="tags">{t($language, 'tagsLabel')}</label>
 				<div class="tags-container">
 					<div class="tags-input-wrapper">
 						{#each tags as tag}
@@ -162,7 +163,7 @@
 									type="button"
 									class="tag-remove"
 									onclick={() => removeTag(tag)}
-									aria-label="Remove tag"
+									aria-label={t($language, 'removeTag')}
 								>
 									×
 								</button>
@@ -177,7 +178,7 @@
 							onkeydown={handleTagKeydown}
 							onfocus={() => (showSuggestions = tagInput.trim().length > 0)}
 							onblur={() => setTimeout(() => (showSuggestions = false), 200)}
-							placeholder={tags.length === 0 ? 'Type tags and press space or comma...' : ''}
+							placeholder={tags.length === 0 ? t($language, 'tagInputPlaceholder') : ''}
 							autocomplete="off"
 						/>
 					</div>
@@ -197,27 +198,27 @@
 						</div>
 					{/if}
 				</div>
-				<small class="hint"
-					>Press Space, Comma, or Enter to add a tag. Use ↑↓ to navigate suggestions.</small
-				>
+				<small class="hint">{t($language, 'tagHint')}</small>
 			</div>
 
 			<div class="form-group">
-				<label for="nsfw">NSFW Content</label>
+				<label for="nsfw">{t($language, 'nsfwContent')}</label>
 				<div class="toggle-wrapper">
 					<label class="toggle-switch">
 						<input type="checkbox" name="nsfw" id="nsfw" bind:checked={nsfw} value="true" />
 						<span class="slider"></span>
 					</label>
-					<span class="toggle-label">{nsfw ? 'Not Safe For Work' : 'Safe For Work'}</span>
+					<span class="toggle-label">
+						{nsfw ? t($language, 'nsfwNotSafe') : t($language, 'nsfwSafe')}
+					</span>
 				</div>
 			</div>
 
 			<button type="submit" disabled={isSubmitting} class="submit-btn">
 				{#if isSubmitting}
-					⏳ Creating...
+					{t($language, 'creating')}
 				{:else}
-					Create Post
+					{t($language, 'createPostButton')}
 				{/if}
 			</button>
 

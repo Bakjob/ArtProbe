@@ -1,4 +1,5 @@
 <script>
+	import { language, t } from '$lib/i18n'
 	import { onMount } from 'svelte'
 	let { post, user } = $props()
 
@@ -6,13 +7,13 @@
 	let likes = $derived(Number(post.likes) || 0)
 
 	onMount(async () => {
-		// Hämta liked-status för posten om användaren är inloggad
+		// Fetch like status when user is logged in
 		if (user) {
 			try {
 				const response = await fetch(`/api/handlelikes?postId=${post.post_id}`)
 				const result = await response.json()
 				liked = result.liked
-				// Uppdatera post också för konsistens
+				// Keep post in sync
 				post.liked = result.liked
 			} catch (error) {
 				console.error('Error fetching like status:', error)
@@ -26,13 +27,13 @@
 	})
 
 	async function toggleLike(event) {
-		event.stopPropagation() // Förhindra att klicket bubblar upp till föräldra-element (t.ex. länkar)
+		event.stopPropagation() // Prevent click bubbling to parent (e.g., links)
 
-		// Optimistisk uppdatering: Uppdatera UI direkt
+		// Optimistic update: update UI immediately
 		const wasLiked = liked
 		liked = !wasLiked
 		likes += wasLiked ? -1 : 1
-		// Uppdatera post också
+		// Keep post in sync
 		post.liked = liked
 		post.likes = likes
 
@@ -44,15 +45,15 @@
 			})
 			const result = await response.json()
 			if (result.error) {
-				alert('You must be logged in to like posts')
-				// Återställ optimistisk uppdatering vid fel
+				alert(t($language, 'likeLoginRequired'))
+				// Revert optimistic update on error
 				liked = wasLiked
 				likes += wasLiked ? 1 : -1
 				post.liked = liked
 				post.likes = likes
 				return
 			}
-			// Uppdatera med korrekt värde från servern (om det skiljer sig)
+			// Sync with server value if it differs
 			if (result.liked !== liked) {
 				liked = result.liked
 				likes += result.liked ? 1 : -1
@@ -61,7 +62,7 @@
 			}
 		} catch (error) {
 			console.error('Error toggling like:', error)
-			// Återställ vid nätverksfel
+			// Revert on network error
 			liked = wasLiked
 			likes += wasLiked ? 1 : -1
 			post.liked = liked

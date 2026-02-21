@@ -1,12 +1,18 @@
 <script>
 	import ExploreCard from '$lib/components/explore/ExploreCard.svelte'
+	import { language, t } from '$lib/i18n'
 
 	let { data } = $props()
 	let posts = $derived(data.posts)
 	let activeTags = $derived(data.tags || [])
 	let allTags = $derived(data.allTags || [])
-	let searchQuery = $derived(data.search || '')
+	let dataSearch = $derived(data.search || '')
+	let searchQuery = $state('')
 	let showMature = $derived(data.showMature || false)
+
+	$effect(() => {
+		searchQuery = dataSearch
+	})
 
 	// Build URL with current filters
 	function buildUrl(options = {}) {
@@ -55,13 +61,13 @@
 </script>
 
 <div class="explore-container">
-	<h1>Explore</h1>
+	<h1>{t($language, 'exploreTitle')}</h1>
 
 	<div class="search-bar">
 		<form onsubmit={handleSearch}>
 			<input 
 				type="text" 
-				placeholder="Sök på titel eller artist..." 
+				placeholder={t($language, 'searchPlaceholder')}
 				bind:value={searchQuery}
 			/>
 			<button type="submit" aria-label="Search">
@@ -73,20 +79,20 @@
 		</form>
 		
 		<button class="mature-toggle" class:active={showMature} onclick={toggleMature}>
-			{showMature ? '🔓 Show all' : '🔒 Hide NSFW'}
+			{showMature ? t($language, 'showAll') : t($language, 'hideNsfw')}
 		</button>
 	</div>
 
 	{#if data.search}
 		<div class="active-search">
-			Söker efter: <strong>{data.search}</strong>
+			{t($language, 'searchingFor')} <strong>{data.search}</strong>
 			<a href={buildUrl({ search: '' })} class="clear-search">×</a>
 		</div>
 	{/if}
 
 	{#if allTags.length > 0}
 		<div class="popular-tags">
-			<span class="popular-label">Popular:</span>
+			<span class="popular-label">{t($language, 'popular')}</span>
 			{#each allTags as tagObj (tagObj.tag)}
 				{@const isActive = activeTags.includes(tagObj.tag.toLowerCase())}
 				{@const url = isActive ? removeTagUrl(tagObj.tag.toLowerCase()) : addTagUrl(tagObj.tag)}
@@ -94,7 +100,7 @@
 					href={url}
 					class="popular-tag"
 					class:active={isActive}
-					title={isActive ? 'Remove filter' : `Filter by #${tagObj.tag}`}
+					title={isActive ? t($language, 'removeFilter') : t($language, 'filterByTag', { tag: tagObj.tag })}
 				>
 					#{tagObj.tag}
 					<span class="tag-count">{tagObj.usage_count}</span>
@@ -103,19 +109,19 @@
 		</div>
 	{/if}
 
-	<div class="filter-bar">Filter by tags and discover new artworks</div>
+	<div class="filter-bar">{t($language, 'filterBar')}</div>
 	{#if activeTags.length > 0}
 		<div class="tag-filter">
-			<span>Filtering by:</span>
+			<span>{t($language, 'filteringBy')}</span>
 			{#each activeTags as tag (tag)}
-				<a href={removeTagUrl(tag)} class="tag-badge" title="Remove tag">
+				<a href={removeTagUrl(tag)} class="tag-badge" title={t($language, 'removeFilter')}>
 					#{tag} <span class="remove-x">×</span>
 				</a>
 			{/each}
-			<a href={buildUrl({ tags: [] })} class="clear-btn">Clear all</a>
+			<a href={buildUrl({ tags: [] })} class="clear-btn">{t($language, 'clearAll')}</a>
 		</div>
 	{:else}
-		<p>Discover amazing artworks from our community</p>
+		<p>{t($language, 'discoverCommunity')}</p>
 	{/if}
 
 	<div class="card-grid">
@@ -125,7 +131,9 @@
 	</div>
 
 	{#if posts.length === 0}
-		<p class="no-posts">No posts yet. Be the first to <a href="/create">create one</a>!</p>
+		<p class="no-posts">
+			{t($language, 'noPosts')} <a href="/create">{t($language, 'createOne')}</a>!
+		</p>
 	{/if}
 </div>
 

@@ -5,10 +5,10 @@ import { r2 } from '$lib/server/r2.js'
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import sharp from 'sharp'
 
-// Bildstorlekar
+// Image sizes
 const AVATAR_SIZE = { width: 512, height: 512 }
 const BACKGROUND_SIZE = { width: 1920, height: 1080 }
-const IMAGE_QUALITY = 85 // Justera kvaliteten för JPEG-komprimering (1-100)
+const IMAGE_QUALITY = 85 // Adjust JPEG compression quality (1-100)
 
 /**
  * Loads the current user's profile data for editing.
@@ -134,17 +134,25 @@ export const actions = {
 
 		try {
 			// Get all posts by user to delete images from R2
-			const postsResult = await pool.query('SELECT file_url FROM posts WHERE user_id = $1', [
-				user.user_id
-			])
+			const postsResult = await pool.query(
+				'SELECT file_url FROM posts WHERE user_id = $1 AND file_url IS NOT NULL',
+				[user.user_id]
+			)
 
 			// Delete all images from R2
 			for (const post of postsResult.rows) {
 				try {
 					// Extract the key from the full URL
 					// URL format: https://pub-xxx.r2.dev/posts/filename.ext
-					const url = new URL(post.file_url)
-					const key = url.pathname.substring(1) // Remove leading slash
+					let key = ''
+					try {
+						const url = new URL(post.file_url)
+						key = url.pathname.startsWith('/') ? url.pathname.substring(1) : url.pathname
+					} catch {
+						key = post.file_url.startsWith('/') ? post.file_url.substring(1) : post.file_url
+					}
+
+					if (!key) continue
 
 					await r2.send(
 						new DeleteObjectCommand({
@@ -218,10 +226,10 @@ export const actions = {
 }
 
 /**
- * Bearbetar avatar-bild genom att krympa den om den är större än max-storlek
+ * Process avatar image by resizing if above max size.
  *
- * @param {Buffer} imageBuffer - Råbildbufferten från uppladdningen
- * @returns {Promise<Buffer>} - Processad bildbuffer
+ * @param {Buffer} imageBuffer - Raw image buffer from upload
+ * @returns {Promise<Buffer>} - Processed image buffer
  */
 async function processAvatarImage(imageBuffer) {
 	return await sharp(imageBuffer)
@@ -234,10 +242,10 @@ async function processAvatarImage(imageBuffer) {
 }
 
 /**
- * Bearbetar bakgrundsbild genom att krympa den om den är större än max-storlek
+ * Process background image by resizing if above max size.
  *
- * @param {Buffer} imageBuffer - Råbildbufferten från uppladdningen
- * @returns {Promise<Buffer>} - Processad bildbuffer
+ * @param {Buffer} imageBuffer - Raw image buffer from upload
+ * @returns {Promise<Buffer>} - Processed image buffer
  */
 async function processBackgroundImage(imageBuffer) {
 	return await sharp(imageBuffer)
@@ -250,11 +258,11 @@ async function processBackgroundImage(imageBuffer) {
 }
 
 /**
- * Laddar upp en ny avatar och raderar den gamla
+ * Upload a new avatar and delete the old one.
  *
- * @param {number} userId - Användarens ID
- * @param {File} avatarFile - Avatar-filen som ska laddas upp
- * @returns {Promise<string>} - URL till den nya avataren
+ * @param {number} userId - User ID
+ * @param {File} avatarFile - Avatar file to upload
+ * @returns {Promise<string>} - URL to the new avatar
  */
 async function uploadAvatar(userId, avatarFile) {
 	// Delete old avatar before uploading new one
@@ -291,11 +299,11 @@ async function uploadAvatar(userId, avatarFile) {
 }
 
 /**
- * Laddar upp en ny bakgrundsbild och raderar den gamla
+ * Upload a new background image and delete the old one.
  *
- * @param {number} userId - Användarens ID
- * @param {File} backgroundFile - Bakgrundsbilden som ska laddas upp
- * @returns {Promise<string>} - URL till den nya bakgrundsbilden
+ * @param {number} userId - User ID
+ * @param {File} backgroundFile - Background image file to upload
+ * @returns {Promise<string>} - URL to the new background image
  */
 async function uploadBackground(userId, backgroundFile) {
 	// Delete old background before uploading new one

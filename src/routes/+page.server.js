@@ -2,8 +2,8 @@ import pool from '$lib/server/db.js'
 
 export async function load() {
 	try {
-		// Hämta trending tags: mest använda, begränsa till 10
-		// För varje tag, hämta ett representativt inläggs fil_url med flest likes
+		// Fetch trending tags: most used, limited to 8
+		// For each tag, fetch a representative post file_url with most likes
 		const trendingTags = await pool.query(
 			`SELECT
 				t.name AS tag,
@@ -28,7 +28,7 @@ export async function load() {
 			LIMIT 8`
 		)
 
-		// Hämta trending posts: högst likes, begränsa till 10
+		// Fetch trending posts: highest likes, limited to 20
 		const trendingPosts = await pool.query(
 			`SELECT
 				p.post_id,

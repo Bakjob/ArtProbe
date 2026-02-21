@@ -1,23 +1,28 @@
 <script>
 	import InfoCard from '$lib/components/profile/InfoCard.svelte'
+	import { language, t } from '$lib/i18n'
 
 	let { data } = $props()
 </script>
 
 <div class="gigs-page">
 	<div class="page-header">
-		<h2>{data.profile?.username || 'User'}'s Gigs</h2>
+		<h2>
+			{t($language, 'userGigsTitle', {
+				username: data.profile?.username || t($language, 'unknownUser')
+			})}
+		</h2>
 
 		{#if data.canEditProfile}
-			<a class="create-gig-button" href={`/profile/${data.profile?.username}/gigs/create`}
-				>Create gig</a
-			>
+			<a class="create-gig-button" href={`/profile/${data.profile?.username}/gigs/create`}>
+				{t($language, 'createGig')}
+			</a>
 		{/if}
 	</div>
 
 	{#if (data.gigs?.length || 0) === 0}
-		<p>This user has no gigs listed.</p>
-		<h2>FEATURE NOT IMPLEMENTED YET</h2>
+		<p>{t($language, 'noGigsListed')}</p>
+		<h2>{t($language, 'featureNotImplemented')}</h2>
 	{:else}
 		<div class="gigs-grid">
 			{#each data.gigs as gig}

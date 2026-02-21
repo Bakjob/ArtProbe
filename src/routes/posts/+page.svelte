@@ -1,1 +1,5 @@
-<h1>Posts</h1>
+<script>
+	import { language, t } from '$lib/i18n'
+</script>
+
+<h1>{t($language, 'postsTitle')}</h1>

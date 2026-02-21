@@ -1,59 +1,65 @@
 <script>
+	import { language, t } from '$lib/i18n'
+
 	let { user } = $props()
 </script>
 
-<h2 class="section-title">📊 Seller Stats</h2>
+<h2 class="section-title">{t($language, 'sellerStats')}</h2>
 
 <div class="stats-grid">
 	<div class="stat-box">
 		<h3>{user.total_gigs}</h3>
-		<p>🛠️ Gigs</p>
+		<p>🛠️ {t($language, 'gigsLabel')}</p>
 	</div>
 	<div class="stat-box">
 		<h3>{user.total_orders}</h3>
-		<p>📦 Orders</p>
+		<p>{t($language, 'orders')}</p>
 	</div>
 	<div class="stat-box">
 		<h3>{user.total_reviews}</h3>
-		<p>⭐ Reviews</p>
+		<p>{t($language, 'reviews')}</p>
 	</div>
 	<div class="stat-box">
 		<h3>{user.avg_rating != null ? Number(user.avg_rating).toFixed(1) : 'N/A'}</h3>
-		<p>🌟 Avg Rating</p>
+		<p>{t($language, 'avgRating')}</p>
 	</div>
 	<div class="stat-box">
 		<h3>
 			{user.on_time_rate != null ? Math.round(user.on_time_rate * 100) + '%' : 'N/A'}
 		</h3>
-		<p>⏰ On-Time Delivery</p>
+		<p>{t($language, 'onTimeDelivery')}</p>
 	</div>
 	<div class="stat-box">
 		<h3>
 			{user.cancellation_rate != null ? Math.round(user.cancellation_rate * 100) + '%' : 'N/A'}
 		</h3>
-		<p>❌ Cancellation Rate</p>
+		<p>{t($language, 'cancellationRate')}</p>
 	</div>
 	<div class="stat-box">
 		<h3>{user.repeat_buyers}</h3>
-		<p>🔁 Repeat Buyers</p>
+		<p>{t($language, 'repeatBuyers')}</p>
 	</div>
 	<div class="stat-box">
 		<h3>${user.total_revenue}</h3>
-		<p>💰 Total Revenue</p>
+		<p>{t($language, 'totalRevenue')}</p>
 	</div>
 	<div class="stat-box">
 		<h3>{user.avg_response_time ? Math.round(user.avg_response_time) : 'N/A'} min</h3>
-		<p>💬 Avg Response Time</p>
+		<p>{t($language, 'avgResponseTime')}</p>
 	</div>
 	<div class="stat-box">
 		<h3>
 			{user.first_response_time ? Math.round(user.first_response_time) : 'N/A'} min
 		</h3>
-		<p>⚡ First Response</p>
+		<p>{t($language, 'firstResponse')}</p>
 	</div>
 	<div class="stat-box">
-		<h3>{user.last_active ? new Date(user.last_active).toLocaleString() : 'N/A'}</h3>
-		<p>🟢 Last Active</p>
+		<h3>
+			{user.last_active
+				? new Date(user.last_active).toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm' })
+				: 'N/A'}
+		</h3>
+		<p>{t($language, 'lastActive')}</p>
 	</div>
 </div>
 

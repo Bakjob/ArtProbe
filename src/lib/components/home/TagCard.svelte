@@ -1,4 +1,6 @@
 <script>
+	import { language, t } from '$lib/i18n'
+
 	let { tag } = $props()
 
 	const tagName = $derived(typeof tag === 'string' ? tag : (tag?.tag ?? tag?.name ?? ''))
@@ -8,9 +10,20 @@
 	)
 
 	const href = $derived(tagName ? `/explore?tag=${encodeURIComponent(tagName)}` : '/explore')
+	const postCountLabel = $derived.by(() => {
+		if (!usageCount) return ''
+		if ($language === 'en') {
+			return usageCount === 1 ? t($language, 'postSingular') : t($language, 'postPlural')
+		}
+		return t($language, 'postPlural')
+	})
 </script>
 
-<a {href} class="card" aria-label={tagName ? `Explore tag ${tagName}` : 'Explore'}>
+<a
+	{href}
+	class="card"
+	aria-label={tagName ? t($language, 'exploreTagAria', { tag: tagName }) : t($language, 'exploreAria')}
+>
 	<div class="image-wrapper">
 		{#if fileUrl}
 			<img src={fileUrl} alt={tagName} loading="lazy" />
@@ -27,9 +40,7 @@
 		</div>
 
 		{#if usageCount}
-			<span class="post-count">
-				{usageCount} {usageCount === 1 ? 'post' : 'posts'}
-			</span>
+			<span class="post-count">{usageCount} {postCountLabel}</span>
 		{/if}
 	</div>
 </a>

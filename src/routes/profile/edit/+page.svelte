@@ -1,4 +1,6 @@
 <script>
+	import { language, t } from '$lib/i18n'
+
 	let { data, form } = $props()
 
 	let gender = $state('')
@@ -47,11 +49,11 @@
 </script>
 
 <div class="profile-container">
-	<h1>Edit Profile</h1>
+	<h1>{t($language, 'editProfileTitle')}</h1>
 
 	<div class="user-info">
-		<p><strong>Username:</strong> {data.user?.username}</p>
-		<p><strong>Email:</strong> {data.user?.email}</p>
+		<p><strong>{t($language, 'username')}:</strong> {data.user?.username}</p>
+		<p><strong>{t($language, 'email')}:</strong> {data.user?.email}</p>
 	</div>
 
 	{#if form && !form.success}
@@ -59,13 +61,13 @@
 	{/if}
 
 	{#if form?.success}
-		<div class="success">Profile updated successfully!</div>
+		<div class="success">{t($language, 'profileUpdated')}</div>
 	{/if}
 
 	<form method="POST" action="?/update" enctype="multipart/form-data">
 		<div class="image-section">
 			<div class="image-upload">
-				<label for="avatar">Profilbild:</label>
+				<label for="avatar">{t($language, 'profilePicture')}:</label>
 				{#if avatarPreview}
 					<div class="image-preview">
 						<img src={avatarPreview} alt="Avatar preview" class="avatar-preview" />
@@ -81,7 +83,7 @@
 			</div>
 
 			<div class="image-upload">
-				<label for="background">Bakgrundsbild:</label>
+				<label for="background">{t($language, 'backgroundImage')}:</label>
 				{#if backgroundPreview}
 					<div class="image-preview">
 						<img src={backgroundPreview} alt="Background preview" class="background-preview" />
@@ -97,39 +99,41 @@
 			</div>
 		</div>
 
-		<label for="age">Age:</label>
+		<label for="age">{t($language, 'age')}:</label>
 		<input type="number" id="age" name="age" value={age} min="1" max="120" />
 
-		<label for="gender">Gender:</label>
+		<label for="gender">{t($language, 'gender')}:</label>
 		<input
 			type="text"
 			id="gender"
 			name="gender"
 			value={gender}
-			placeholder="e.g. Male, Female, mental illness"
+			placeholder={t($language, 'genderPlaceholder')}
 		/>
 
-		<label for="phone">Phone:</label>
+		<label for="phone">{t($language, 'phone')}:</label>
 		<input type="tel" id="phone" name="phone" value={phone} placeholder="+1234567890" />
 
-		<label for="bio">Bio:</label>
-		<textarea id="bio" name="bio" rows="5" placeholder="Tell us about yourself...">{bio}</textarea>
+		<label for="bio">{t($language, 'bio')}:</label>
+		<textarea id="bio" name="bio" rows="5" placeholder={t($language, 'bioPlaceholder')}>
+			{bio}
+		</textarea>
 
-		<button type="submit">Save Profile</button>
+		<button type="submit">{t($language, 'saveProfile')}</button>
 	</form>
 
 	<div class="danger-zone">
-		<h3>Danger Zone</h3>
-		<p>Once you delete your profile, there is no going back. Please be certain.</p>
+		<h3>{t($language, 'dangerZone')}</h3>
+		<p>{t($language, 'deleteWarning')}</p>
 		<form
 			method="POST"
 			action="?/delete"
 			onsubmit={(e) => {
-				if (!confirm('Are you sure you want to delete your profile? This action cannot be undone.'))
+				if (!confirm(t($language, 'deleteConfirm')))
 					e.preventDefault()
 			}}
 		>
-			<button type="submit" class="delete-button">Delete Profile</button>
+			<button type="submit" class="delete-button">{t($language, 'deleteProfile')}</button>
 		</form>
 	</div>
 </div>

@@ -1,5 +1,7 @@
 <script>
 	import LikeButton from '$lib/components/LikeButton.svelte'
+	import { language, t } from '$lib/i18n'
+
 	let { data } = $props()
 	let post = $derived(data.post)
 </script>
@@ -15,7 +17,9 @@
 				{/if}
 				<a href="/profile/{post.username}" class="username">{post.username}</a>
 			</div>
-			<span class="post-date">{new Date(post.created_at).toLocaleDateString('sv-SE')}</span>
+		<span class="post-date">
+			{new Date(post.created_at).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' })}
+		</span>
 		</div>
 
 		<img src={post.file_url} alt={post.title} class="post-image" />
@@ -41,8 +45,13 @@
 	</div>
 {:else if data.error}
 	<div class="error">
-		<h1>Error</h1>
+		<h1>{t($language, 'errorTitle')}</h1>
 		<p>{data.error}</p>
+	</div>
+{:else if data.removed}
+	<div class="error removed">
+		<h1>{t($language, 'postRemovedTitle')}</h1>
+		<p>{t($language, 'postRemovedBody')}</p>
 	</div>
 {/if}
 
@@ -162,5 +171,9 @@
 
 	.error p {
 		color: #666;
+	}
+
+	.error.removed h1 {
+		color: #555;
 	}
 </style>

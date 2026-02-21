@@ -1,4 +1,10 @@
-<h1>About</h1>
-<p>This is the about page of the ArtProbe application.</p>
-<p>Here you can find more information about the project and its goals.</p>
-<p>Return to the <a href="/">home page</a>.</p>
+<script>
+	import { language, t } from '$lib/i18n'
+</script>
+
+<h1>{t($language, 'aboutTitle')}</h1>
+<p>{t($language, 'aboutLine1')}</p>
+<p>{t($language, 'aboutLine2')}</p>
+<p>
+	<a href="/">{t($language, 'aboutReturnHome')}</a>.
+</p>

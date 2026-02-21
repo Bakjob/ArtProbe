@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation'
+	import { language, t } from '$lib/i18n'
 
 	let username = ''
 	let email = ''
@@ -13,7 +14,7 @@
 		error = ''
 
 		if (password !== confirmPassword) {
-			error = 'Passwords do not match!'
+			error = t($language, 'passwordMismatch')
 			return
 		}
 
@@ -29,14 +30,14 @@
 			const data = await response.json()
 
 			if (!response.ok) {
-				error = data.error || 'Registration failed'
+				error = data.error || t($language, 'registrationFailed')
 				return
 			}
 
 			// Success - redirect to explore
 			window.location.href = '/explore'
 		} catch (err) {
-			error = 'Network error. Please try again.'
+			error = t($language, 'networkError')
 		} finally {
 			loading = false
 		}
@@ -44,30 +45,32 @@
 </script>
 
 <div class="register-container">
-	<h1>Register</h1>
+	<h1>{t($language, 'registerTitle')}</h1>
 
 	{#if error}
 		<div class="error">{error}</div>
 	{/if}
 
 	<form on:submit={handleSubmit}>
-		<label for="username">Username:</label>
+		<label for="username">{t($language, 'username')}:</label>
 		<input type="text" id="username" bind:value={username} required />
 
-		<label for="email">Email:</label>
+		<label for="email">{t($language, 'email')}:</label>
 		<input type="email" id="email" bind:value={email} required />
 
-		<label for="password">Password:</label>
+		<label for="password">{t($language, 'password')}:</label>
 		<input type="password" id="password" bind:value={password} required />
 
-		<label for="confirm_password">Confirm Password:</label>
+		<label for="confirm_password">{t($language, 'confirmPassword')}:</label>
 		<input type="password" id="confirm_password" bind:value={confirmPassword} required />
 
 		<button type="submit" disabled={loading}>
-			{loading ? 'Registering...' : 'Register'}
+			{loading ? t($language, 'registering') : t($language, 'registerTitle')}
 		</button>
 	</form>
-	<p>Already have an account? <a href="/auth/login">Login here</a>.</p>
+	<p>
+		{t($language, 'alreadyHaveAccount')} <a href="/auth/login">{t($language, 'loginHere')}</a>.
+	</p>
 </div>
 
 <style scoped>

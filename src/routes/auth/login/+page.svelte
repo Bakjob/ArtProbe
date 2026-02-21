@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation'
+	import { language, t } from '$lib/i18n'
 
 	let username = ''
 	let password = ''
@@ -21,14 +22,14 @@
 			const data = await response.json()
 
 			if (!response.ok) {
-				error = data.error || 'Login failed'
+				error = data.error || t($language, 'loginFailed')
 				return
 			}
 
 			// Success - reload page to update auth state
 			window.location.href = '/explore'
 		} catch (err) {
-			error = 'Network error. Please try again.'
+			error = t($language, 'networkError')
 		} finally {
 			loading = false
 		}
@@ -36,24 +37,26 @@
 </script>
 
 <div class="login-container">
-	<h1>Login</h1>
+	<h1>{t($language, 'loginTitle')}</h1>
 
 	{#if error}
 		<div class="error">{error}</div>
 	{/if}
 
 	<form on:submit={handleSubmit}>
-		<label for="username">Username:</label>
+		<label for="username">{t($language, 'username')}:</label>
 		<input type="text" id="username" bind:value={username} required />
 
-		<label for="password">Password:</label>
+		<label for="password">{t($language, 'password')}:</label>
 		<input type="password" id="password" bind:value={password} required />
 
 		<button type="submit" disabled={loading}>
-			{loading ? 'Logging in...' : 'Login'}
+			{loading ? t($language, 'loggingIn') : t($language, 'loginTitle')}
 		</button>
 	</form>
-	<p>Don't have an account? <a href="/auth/register">Register here</a>.</p>
+	<p>
+		{t($language, 'noAccount')} <a href="/auth/register">{t($language, 'registerHere')}</a>.
+	</p>
 </div>
 
 <style scoped>

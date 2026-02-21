@@ -1,11 +1,13 @@
 <script>
 	import LikeButton from '$lib/components/LikeButton.svelte'
+	import { language, t } from '$lib/i18n'
 
 	let { post, user = null } = $props()
 
 	const href = $derived(`/posts/${post.post_id}`)
-	const title = $derived(post.title || 'Untitled')
+	const title = $derived(post.title || t($language, 'untitled'))
 	const username = $derived(post.username || '')
+	const byLabel = $derived(t($language, 'by'))
 </script>
 
 <div class="card">
@@ -14,7 +16,7 @@
 		<div class="overlay">
 			<h4 class="title">{title}</h4>
 			{#if username}
-				<p class="meta">by {username}</p>
+				<p class="meta">{byLabel} {username}</p>
 			{/if}
 		</div>
 	</a>

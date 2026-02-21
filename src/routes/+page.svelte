@@ -3,6 +3,7 @@
 	import TagCard from '$lib/components/home/TagCard.svelte'
 	import PostCard from '$lib/components/home/PostCard.svelte'
 	import ArtistCard from '$lib/components/home/ArtistCard.svelte'
+	import { language, t } from '$lib/i18n'
 
 	let { data } = $props()
 
@@ -15,14 +16,14 @@
 	<!-- HERO -->
 	<section class="hero">
 		<div class="hero-content">
-			<h1>Welcome to Artprobe</h1>
-			<p class="tagline">Art that grows with curiosity</p>
+		<h1>{t($language, 'welcomeToArtProbe')}</h1>
+		<p class="tagline">{t($language, 'tagline')}</p>
 		</div>
 	</section>
 
 	<!-- TRENDING TAGS -->
 	<section class="tags-trending">
-		<h2>Trending Tags</h2>
+		<h2>{t($language, 'trendingTags')}</h2>
 
 		<div class="tag-grid">
 			{#each data.trendingTags.slice(0,10) as tag}
@@ -33,7 +34,7 @@
 
 	<!-- TRENDING POSTS -->
 	<section class="posts-trending">
-		<h2>Trending Posts</h2>
+		<h2>{t($language, 'trendingPosts')}</h2>
 
 		<div class="trending-grid">
 			{#each data.trendingPosts.slice(0,20) as post}
@@ -44,7 +45,7 @@
 
 	<!-- TRENDING ARTISTS -->
 	<section class="artists-trending">
-		<h2>Trending Artists</h2>
+		<h2>{t($language, 'trendingArtists')}</h2>
 
 		<div class="artist-grid">
 			{#each data.trendingArtists.slice(0,20) as artist}

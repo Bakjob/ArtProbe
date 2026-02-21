@@ -1,6 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte'
 	import { fly } from 'svelte/transition'
+	import ThemeToggle from '$lib/components/settings/ThemeToggle.svelte'
 
 	let {
 		open = false,
@@ -48,6 +49,10 @@
 				<a href={link.href} onclick={close}>{link.label}</a>
 			{/if}
 		{/each}
+
+		<div class="drawer-section">
+			<ThemeToggle />
+		</div>
 	</nav>
 {/if}
 
@@ -103,5 +108,11 @@
 		display: flex;
 		flex-direction: column;
 		padding-left: 0.5rem;
+	}
+
+	.drawer-section {
+		margin-top: 0.5rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
 	}
 </style>

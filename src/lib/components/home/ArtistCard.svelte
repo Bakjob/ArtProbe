@@ -1,4 +1,6 @@
 <script>
+	import { language, t } from '$lib/i18n'
+
 	let { artist } = $props()
 
 	const username = $derived.by(() => artist?.username ?? '')
@@ -16,9 +18,14 @@
 	})
 
 	const href = $derived(username ? `/profile/${encodeURIComponent(username)}` : '/profile')
+	const totalLikesLabel = $derived.by(() => t($language, 'totalLikes', { count: totalLikes }))
 </script>
 
-<a class="card" {href} aria-label={username ? `View profile ${username}` : 'View profile'}>
+<a
+	class="card"
+	{href}
+	aria-label={username ? t($language, 'viewProfileAria', { username }) : t($language, 'viewProfile')}
+>
 	<div class="avatar" aria-hidden="true">
 		{#if avatarUrl}
 			<img class="avatar-img" src={avatarUrl} alt="" loading="lazy" />
@@ -28,7 +35,7 @@
 	</div>
 	<div class="info">
 		<h4 class="name">{username}</h4>
-		<p class="meta">{totalLikes} total likes</p>
+		<p class="meta">{totalLikesLabel}</p>
 	</div>
 </a>
 

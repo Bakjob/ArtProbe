@@ -1,17 +1,19 @@
 <script>
+	import { language, t } from '$lib/i18n'
+
 	let { gigs } = $props()
 </script>
 
 {#if gigs.length > 0}
 	<section class="section">
-		<h2>📦 Gigs</h2>
+		<h2>📦 {t($language, 'gigsLabel')}</h2>
 		<div class="gigs-list">
 			{#each gigs as gig}
 				<div class="gig-card">
 					<h3>{gig.title}</h3>
 					<p class="description">{gig.description}</p>
 					<div class="gig-meta">
-						<span>🚚 {gig.delivery_days} days delivery</span>
+						<span>{t($language, 'deliveryDaysLabel', { days: gig.delivery_days })}</span>
 					</div>
 				</div>
 			{/each}

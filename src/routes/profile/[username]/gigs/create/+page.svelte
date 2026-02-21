@@ -1,6 +1,7 @@
 <script>
 	import { enhance } from '$app/forms'
 	import { goto } from '$app/navigation'
+	import { language, t } from '$lib/i18n'
 
 	let { data, form } = $props()
 
@@ -10,8 +11,10 @@
 
 <div class="container">
 	<div class="card">
-		<h1>Create gig</h1>
-		<p class="subtitle">Create a new gig for {data.profile?.username}</p>
+		<h1>{t($language, 'createGigTitle')}</h1>
+		<p class="subtitle">
+			{t($language, 'createGigSubtitle', { username: data.profile?.username || '' })}
+		</p>
 
 		<form
 			method="POST"
@@ -23,33 +26,33 @@
 					if (result.type === 'redirect') {
 						goto(result.location)
 					} else if (result.type === 'failure') {
-						errorMessage = result.data?.message || 'Failed to create gig'
+						errorMessage = result.data?.message || t($language, 'failedCreateGig')
 					}
 				}
 			}}
 		>
 			<div class="form-group">
-				<label for="title">Gig title</label>
+				<label for="title">{t($language, 'gigTitleLabel')}</label>
 				<input id="title" name="title" type="text" required />
 			</div>
 
 			<div class="form-group">
-				<label for="description">Description</label>
+				<label for="description">{t($language, 'descriptionLabel')}</label>
 				<textarea id="description" name="description" rows="5" required></textarea>
 			</div>
 
 			<div class="form-group">
-				<label for="delivery_days">Delivery days</label>
+				<label for="delivery_days">{t($language, 'deliveryDays')}</label>
 				<input id="delivery_days" name="delivery_days" type="number" min="1" required />
 			</div>
 
 			<div class="form-group">
-				<label for="tags">Tags</label>
+				<label for="tags">{t($language, 'tagsLabel')}</label>
 				<input id="tags" name="tags" type="text" required />
 			</div>
 
 			<button class="submit" type="submit" disabled={isSubmitting}>
-				{isSubmitting ? 'Creating…' : 'Create gig'}
+				{isSubmitting ? t($language, 'creatingGig') : t($language, 'createGigButton')}
 			</button>
 
 			{#if errorMessage}

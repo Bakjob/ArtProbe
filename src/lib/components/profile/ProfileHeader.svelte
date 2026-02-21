@@ -1,4 +1,6 @@
 <script>
+	import { language, t } from '$lib/i18n'
+
 	let {
 		user = null,
 		gigs = undefined,
@@ -49,14 +51,14 @@
 <div class="profile-header">
 	<div class="avatar">
 		{#if resolvedAvatarUrl}
-			<img src={resolvedAvatarUrl} alt="{username}'s avatar" />
+			<img src={resolvedAvatarUrl} alt={t($language, 'avatarAlt', { username })} />
 		{:else}
 			{avatarLetter}
 		{/if}
 	</div>
 
 	<div class="user-info">
-		<h1>{username || 'Unknown user'}</h1>
+	<h1>{username || t($language, 'unknownUser')}</h1>
 
 		{#if resolvedBio}
 			<p class="bio">{resolvedBio}</p>
@@ -64,26 +66,29 @@
 
 		<div class="meta">
 			{#if resolvedAge != null}
-				<span>🎂 Age: {resolvedAge}</span>
+				<span>🎂 {t($language, 'age')}: {resolvedAge}</span>
 			{/if}
 			{#if resolvedGender}
-				<span>⚧ {resolvedGender}</span>
+				<span>⚧ {t($language, 'gender')}: {resolvedGender}</span>
 			{/if}
 			{#if resolvedCreatedAt}
-				<span>📅 Joined: {resolvedCreatedAt.toLocaleDateString()}</span>
+				<span>
+					📅 {t($language, 'joined')}:
+					{resolvedCreatedAt.toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' })}
+				</span>
 			{/if}
 			{#if gigsCount != null}
-				<span>🛠️ Gigs: {gigsCount}</span>
+				<span>🛠️ {t($language, 'gigsLabel')}: {gigsCount}</span>
 			{/if}
 			{#if postsCount != null}
-				<span>🖼️ Posts: {postsCount}</span>
+				<span>🖼️ {t($language, 'postsLabel')}: {postsCount}</span>
 			{/if}
 		</div>
 	</div>
 
 	{#if showEditButton}
 		<div>
-			<a class="edit-profile-button" href="/profile/edit">Edit Profile</a>
+			<a class="edit-profile-button" href="/profile/edit">{t($language, 'editProfile')}</a>
 		</div>
 	{/if}
 </div>

@@ -83,7 +83,7 @@ export async function load({ url }) {
 				params
 			)
 		} else {
-			// All recent posts
+			// Recent posts (last 7 days), then fill up to 10 if needed
 			const whereClause = conditions.length > 0 ? `AND ${conditions.join(' AND ')}` : ''
 			
 			result = await pool.query(
@@ -107,6 +107,51 @@ export async function load({ url }) {
 				ORDER BY l.like_count DESC, p.created_at DESC`,
 				params
 			)
+
+			if (result.rows.length < 10) {
+				const needed = 10 - result.rows.length
+				const existingIds = result.rows.map((row) => row.post_id)
+				const extraParams = [...params]
+				let extraParamCount = paramCount
+
+				let excludeClause = ''
+				if (existingIds.length > 0) {
+					const excludePlaceholders = existingIds
+						.map((_, i) => `$${extraParamCount + i}`)
+						.join(', ')
+					extraParams.push(...existingIds)
+					extraParamCount += existingIds.length
+					excludeClause = `AND p.post_id NOT IN (${excludePlaceholders})`
+				}
+
+				extraParams.push(needed)
+
+				const olderResult = await pool.query(
+					`SELECT 
+						p.post_id,
+						p.title,
+						p.file_url,
+						p.mature_content,
+						COALESCE(l.like_count, 0) AS likes,
+						p.created_at,
+						u.username
+					FROM posts p
+					JOIN users u ON p.user_id = u.user_id
+					LEFT JOIN (
+						SELECT post_id, COUNT(*) AS like_count
+						FROM post_likes
+						GROUP BY post_id
+					) l ON p.post_id = l.post_id
+					WHERE p.created_at < NOW() - INTERVAL '7 days'
+					${whereClause}
+					${excludeClause}
+					ORDER BY l.like_count DESC, p.created_at DESC
+					LIMIT $${extraParamCount}`,
+					extraParams
+				)
+
+				result.rows = [...result.rows, ...olderResult.rows]
+			}
 		}
 
 		return {

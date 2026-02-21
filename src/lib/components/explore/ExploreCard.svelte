@@ -1,5 +1,6 @@
 <script>
   import LikeButton from '$lib/components/LikeButton.svelte'
+  import { language, t } from '$lib/i18n'
   export let post
   export let user
 </script>
@@ -7,12 +8,12 @@
 <div class="image-card-main">
   <a href="/posts/{post.post_id}" class="post-link">
     <div class="image-container">
-      <img src={post.file_url} alt={post.title || 'Artwork'} />
+      <img src={post.file_url} alt={post.title || t($language, 'untitled')} />
 
       <!-- Info overlay -->
       <div class="image-card-info">
-        <h2>{post.title || 'Untitled'}</h2>
-        <span class="author">by {post.username}</span>
+        <h2>{post.title || t($language, 'untitled')}</h2>
+        <span class="author">{t($language, 'by')} {post.username}</span>
       </div>
     </div>
   </a>
@@ -60,7 +61,7 @@
 }
 
 .image-card-main:hover img {
-  transform: scale(1.05);
+  transform: scale(1.4);
 }
 
 /* Info overlay */
@@ -87,7 +88,7 @@
 }
 
 .image-card-info .author {
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   opacity: 0.8;
 }
 

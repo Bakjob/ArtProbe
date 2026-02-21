@@ -1,11 +1,12 @@
 <script>
+	import { language, t } from '$lib/i18n'
 	let gigs = []
 </script>
 
 <div class="container">
-	<h1>Gigs</h1>
-	<p>No gigs yet. Check back soon!</p>
-	<h2>FEATURE NOT IMPLEMENTED YET</h2>
+	<h1>{t($language, 'gigsTitle')}</h1>
+	<p>{t($language, 'noGigs')}</p>
+	<h2>{t($language, 'featureNotImplemented')}</h2>
 </div>
 
 <style>
